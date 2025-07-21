@@ -4,8 +4,9 @@ import { UserProvider } from './context/UserContext.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import ChatPage from './pages/ChatPage.jsx';
 import ShopPage from './pages/ShopPage.jsx';
-import AchievementsPage from './pages/Achievementspage.jsx';
+import AchievementsPage from './pages/AchievementsPage.jsx';
 import InventoryPage from './pages/InventoryPage.jsx';
+import FriendsPage from './pages/FriendsPage.jsx'; // Impor halaman baru
 
 // Komponen Router sederhana untuk menavigasi antar halaman
 const AppRouter = () => {
@@ -21,6 +22,8 @@ const AppRouter = () => {
   switch (path) {
     case '/chat':
       return <ChatPage />;
+    case '/friends': // Tambahkan rute baru di sini
+      return <FriendsPage />;
     case '/shop':
       return <ShopPage />;
     case '/achievements':

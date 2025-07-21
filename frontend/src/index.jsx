@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-// import './index.css'; // Anda bisa membuat file ini untuk styling global
+import App from './App.jsx';
+
+// Pastikan baris ini ada dan tidak ada kesalahan ketik.
+// Baris ini memuat file CSS yang berisi semua aturan Tailwind.
+import './index.css';
 
 // 1. Dapatkan elemen root dari HTML Anda
 const rootElement = document.getElementById('root');

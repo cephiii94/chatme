@@ -1,41 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext.jsx'; // Impor useAuth
 
-// --- Placeholder untuk Konteks dan API ---
-// Di aplikasi nyata, ini akan diimpor dari file lain.
-// const { login } = useContext(AuthContext); // Contoh penggunaan AuthContext
-// import { apiLogin, apiRegister } from '../services/api'; 
-const apiLogin = async ({ email, password }) => {
-  // Simulasi panggilan API
-  console.log('Mencoba login dengan:', { email, password });
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Simulasi latensi jaringan
-  if (email === 'cecep@gmail.com' && password === 'password123') {
-    return { token: 'fake-jwt-token-string', user: { email: 'cecep@gmail.com', username: 'Tuan Cecep' } };
-  }
-  throw new Error('Email atau password salah.');
-};
-
-const apiRegister = async ({ username, email, password }) => {
-    console.log('Mencoba registrasi dengan:', { username, email, password });
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    // Simulasi username atau email sudah ada
-    if (email === 'sudahada@gmail.com') {
-        throw new Error('Email sudah digunakan.');
-    }
-    return { token: 'new-fake-jwt-token', user: { email, username } };
-};
-
-
-// --- Komponen Utama LoginPage ---
 export default function LoginPage() {
-  // State untuk beralih antara mode Login dan Register
+  // Gunakan fungsi login dan register langsung dari AuthContext
+  const { login, register } = useAuth(); 
+
   const [isLoginView, setIsLoginView] = useState(true);
-  
-  // State untuk data formulir, pesan error, dan status loading
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Handler untuk memperbarui state saat pengguna mengetik
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -43,36 +17,27 @@ export default function LoginPage() {
     });
   };
 
-  // Handler untuk pengiriman formulir
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      let response;
       if (isLoginView) {
-        // Panggil API login
         const { email, password } = formData;
-        response = await apiLogin({ email, password });
-        console.log('Login berhasil!', response);
-        // Di aplikasi nyata, simpan token (misal di localStorage atau context)
-        // localStorage.setItem('token', response.token);
-        alert('Login berhasil! Anda akan diarahkan ke halaman chat.');
-        // window.location.href = '/chat'; // Navigasi ke halaman chat
+        // Panggil fungsi login dari context.
+        // Jika berhasil, context akan diperbarui dan App.jsx akan otomatis
+        // menampilkan halaman chat tanpa perlu navigasi manual.
+        await login(email, password);
       } else {
-        // Panggil API register
         const { username, email, password } = formData;
-        response = await apiRegister({ username, email, password });
-        console.log('Registrasi berhasil!', response);
+        await register(username, email, password);
         alert('Registrasi berhasil! Silakan login dengan akun baru Anda.');
-        setIsLoginView(true); // Arahkan ke tampilan login setelah registrasi
+        setIsLoginView(true);
       }
     } catch (err) {
-      // Tangani error dari API
       setError(err.message || 'Terjadi kesalahan.');
     } finally {
-      // Hentikan status loading
       setLoading(false);
     }
   };
@@ -88,7 +53,6 @@ export default function LoginPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Input Username (hanya untuk registrasi) */}
           {!isLoginView && (
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
@@ -106,8 +70,6 @@ export default function LoginPage() {
               />
             </div>
           )}
-
-          {/* Input Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Alamat Email
@@ -124,8 +86,6 @@ export default function LoginPage() {
               placeholder="cecephard12@gmail.com"
             />
           </div>
-
-          {/* Input Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Kata Sandi
@@ -142,15 +102,11 @@ export default function LoginPage() {
               placeholder="••••••••"
             />
           </div>
-
-          {/* Pesan Error */}
           {error && (
             <div className="p-3 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg">
               {error}
             </div>
           )}
-
-          {/* Tombol Submit */}
           <div>
             <button
               type="submit"
@@ -161,8 +117,6 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-
-        {/* Tombol untuk beralih mode */}
         <div className="text-sm text-center">
           <button
             onClick={() => {

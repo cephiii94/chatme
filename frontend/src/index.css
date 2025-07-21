@@ -1,0 +1,10 @@
+/*
+ * File ini mengimpor tiga lapisan utama dari Tailwind CSS.
+ * 1. @tailwind base: Mereset gaya dasar browser agar konsisten.
+ * 2. @tailwind components: Memuat kelas-kelas komponen dari Tailwind.
+ * 3. @tailwind utilities: Memuat kelas-kelas utilitas (seperti text-center, bg-blue-500, dll.)
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
