@@ -1,0 +1,25 @@
+# Ketergantungan (Dependencies)
+# Abaikan folder node_modules di semua direktori
+**/node_modules
+
+# File Log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# File Lingkungan (Environment)
+# Jangan pernah menyimpan file .env di dalam repositori
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Direktori Build/Dist
+# Abaikan folder hasil build dari frontend (Vite)
+/frontend/dist
+
+# File Sistem Operasi
+.DS_Store
+Thumbs.db
