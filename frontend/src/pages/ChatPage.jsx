@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
-// Menggunakan path relatif yang benar dari folder 'pages'
-import Navbar from '../components/layout/Navbar.jsx';
-import FriendList from '../components/chat/ChatList.jsx';
+import ChatList from '../components/chat/ChatList.jsx';
 import ChatWindow from '../components/chat/ChatWindow.jsx';
+import InventoryModal from '../components/chat/InventoryModal.jsx'; // Impor modal inventaris
 
 // Data Simulasi
 const friendsData = [
   { id: 2, name: 'Erlin Karlinda', avatar: '👩‍💻', lastMessage: 'Jangan lupa beli susu ya.', unread: 2, isOnline: true },
   { id: 3, name: 'Vanno', avatar: '👶', lastMessage: 'Ayah, main yuk!', unread: 0, isOnline: false },
-  { id: 4, name: 'Varren', avatar: '🍼', lastMessage: 'zzzz...', unread: 1, isOnline: true },
 ];
 
 const messagesData = {
-    'ai': [{ sender: 'ai', text: 'Halo Tuan Cecep! Ada yang bisa saya bantu hari ini?' }],
-    2: [{ sender: 'other', text: 'Jangan lupa beli susu ya.'}, {sender: 'me', text: 'Oke, siap!'}],
-    3: [{ sender: 'other', text: 'Ayah, main yuk!'}],
-    4: [{ sender: 'other', text: 'zzzz...'}],
+    'ai': [{ sender: 'ai', text: 'Halo Tuan Cecep! Ada yang bisa saya bantu hari ini?', type: 'text' }],
+    2: [{ sender: 'other', text: 'Jangan lupa beli susu ya.', type: 'text'}, {sender: 'me', text: 'Oke, siap!', type: 'text'}],
+    3: [{ sender: 'other', text: 'Ayah, main yuk!', type: 'text'}],
 }
 
 export default function ChatPage() {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
 
   const handleSelectFriend = (friend) => {
     setSelectedFriend(friend);
@@ -28,34 +26,66 @@ export default function ChatPage() {
   };
 
   const handleSendMessage = (newMessageText) => {
-      const newMessage = { sender: 'me', text: newMessageText };
+      const newMessage = { sender: 'me', text: newMessageText, type: 'text' };
       setMessages(prevMessages => [...prevMessages, newMessage]);
-      // Di sini Anda akan memanggil peerService.sendMessage(newMessage)
   }
 
-  return (
-    <div className="flex flex-col h-screen font-sans antialiased text-gray-800">
-        <Navbar />
+  const handleSendFile = (file) => {
+    const formatBytes = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    const newFileMessage = {
+        sender: 'me', type: 'file', fileName: file.name, fileSize: formatBytes(file.size),
+        fileURL: URL.createObjectURL(file), fileObject: file
+    };
+    setMessages(prevMessages => [...prevMessages, newFileMessage]);
+  };
 
-        <div className="flex flex-grow overflow-hidden">
-            {/* Kolom Kiri: Daftar Teman */}
-            <div className="w-1/3 max-w-sm">
-                <FriendList 
+  const handleSendItem = (item) => {
+    console.log("Mengirim item:", item);
+    const newItemMessage = {
+        sender: 'me',
+        type: 'item',
+        itemName: item.name,
+        itemIcon: item.icon
+    };
+    setMessages(prevMessages => [...prevMessages, newItemMessage]);
+    setIsInventoryOpen(false);
+  };
+
+  return (
+    // --- PERUBAHAN DI SINI ---
+    // Menggunakan React Fragment (<>...</>) sebagai pembungkus utama
+    <>
+        <div className="flex h-full w-full">
+            <div className="w-1/3 max-w-sm flex-shrink-0">
+                <ChatList 
                     friends={friendsData} 
                     onSelectFriend={handleSelectFriend}
                     selectedFriendId={selectedFriend?.id}
                 />
             </div>
-
-            {/* Kolom Kanan: Jendela Obrolan */}
             <div className="flex-grow">
                 <ChatWindow 
                     friend={selectedFriend} 
                     messages={messages}
                     onSendMessage={handleSendMessage}
+                    onSendFile={handleSendFile}
+                    onOpenInventory={() => setIsInventoryOpen(true)}
                 />
             </div>
         </div>
-    </div>
+        
+        {/* Modal sekarang berada di luar div utama, sehingga tidak terjebak */}
+        <InventoryModal 
+            isOpen={isInventoryOpen}
+            onClose={() => setIsInventoryOpen(false)}
+            onSelectItem={handleSendItem}
+        />
+    </>
   );
 }

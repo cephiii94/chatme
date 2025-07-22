@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext.jsx'; // Impor useAuth
+import { useAuth } from '../context/AuthContext.jsx';
+import Notification from '../components/ui/notification.jsx'; // 1. Impor Notification
 
 export default function LoginPage() {
-  // Gunakan fungsi login dan register langsung dari AuthContext
   const { login, register } = useAuth(); 
-
   const [isLoginView, setIsLoginView] = useState(true);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(null); // 2. Ganti state 'error' dengan 'notification'
 
   const handleChange = (e) => {
     setFormData({
@@ -20,23 +19,33 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setNotification(null); // Bersihkan notifikasi lama
 
     try {
       if (isLoginView) {
         const { email, password } = formData;
-        // Panggil fungsi login dari context.
-        // Jika berhasil, context akan diperbarui dan App.jsx akan otomatis
-        // menampilkan halaman chat tanpa perlu navigasi manual.
+        
+        // --- PERUBAHAN DI SINI ---
+        // Tampilkan notifikasi sukses secara optimis
+        setNotification({ message: 'Login berhasil! Mengalihkan...', type: 'success' });
+        
+        // Beri jeda sejenak agar notifikasi terlihat
+        await new Promise(resolve => setTimeout(resolve, 1500)); 
+        
+        // Lanjutkan proses login yang akan memicu redirect
         await login(email, password);
+
       } else {
         const { username, email, password } = formData;
         await register(username, email, password);
-        alert('Registrasi berhasil! Silakan login dengan akun baru Anda.');
+        // Ganti alert dengan notifikasi sukses
+        setNotification({ message: 'Registrasi berhasil! Silakan login.', type: 'success' });
         setIsLoginView(true);
+        setFormData({ username: '', email: '', password: '' }); // Kosongkan form
       }
     } catch (err) {
-      setError(err.message || 'Terjadi kesalahan.');
+      // Jika terjadi error (misal: password salah), ganti notifikasi menjadi error
+      setNotification({ message: err.message || 'Terjadi kesalahan.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -102,11 +111,9 @@ export default function LoginPage() {
               placeholder="••••••••"
             />
           </div>
-          {error && (
-            <div className="p-3 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg">
-              {error}
-            </div>
-          )}
+          
+          {/* Pesan error lama sudah dihapus dari sini */}
+
           <div>
             <button
               type="submit"
@@ -121,7 +128,7 @@ export default function LoginPage() {
           <button
             onClick={() => {
               setIsLoginView(!isLoginView);
-              setError('');
+              setNotification(null); // Bersihkan notifikasi saat beralih
               setFormData({ username: '', email: '', password: '' });
             }}
             className="font-medium text-blue-600 hover:text-blue-500"
@@ -130,6 +137,9 @@ export default function LoginPage() {
           </button>
         </div>
       </div>
+      
+      {/* 4. Render komponen Notification di sini */}
+      <Notification notification={notification} onClear={() => setNotification(null)} />
     </div>
   );
 }

@@ -1,42 +1,69 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
+
+import Sidebar from './components/layout/Sidebar.jsx'; 
+
 import LoginPage from './pages/LoginPage.jsx';
 import ChatPage from './pages/ChatPage.jsx';
 import ShopPage from './pages/ShopPage.jsx';
 import AchievementsPage from './pages/AchievementsPage.jsx';
 import InventoryPage from './pages/InventoryPage.jsx';
-import FriendsPage from './pages/FriendsPage.jsx'; // Impor halaman baru
+import FriendsPage from './pages/FriendsPage.jsx';
 
-// Komponen Router sederhana untuk menavigasi antar halaman
 const AppRouter = () => {
   const { isAuthenticated } = useAuth();
 
-  // Jika pengguna tidak terautentikasi, selalu tampilkan halaman login
   if (!isAuthenticated) {
     return <LoginPage />;
   }
 
-  // Jika terautentikasi, tampilkan halaman berdasarkan URL
   const path = window.location.pathname;
+  let currentPage;
+
+  // Tentukan halaman mana yang akan ditampilkan
   switch (path) {
     case '/chat':
-      return <ChatPage />;
-    case '/friends': // Tambahkan rute baru di sini
-      return <FriendsPage />;
+      currentPage = <ChatPage />;
+      break;
+    case '/friends':
+      currentPage = <FriendsPage />;
+      break;
     case '/shop':
-      return <ShopPage />;
+      currentPage = <ShopPage />;
+      break;
     case '/achievements':
-      return <AchievementsPage />;
+      currentPage = <AchievementsPage />;
+      break;
     case '/inventory':
-      return <InventoryPage />;
+      currentPage = <InventoryPage />;
+      break;
     default:
-      // Halaman default jika URL tidak cocok adalah halaman chat
-      return <ChatPage />;
+      currentPage = <ChatPage />;
+      break;
   }
+
+  return (
+    <div className="flex h-screen bg-gray-50 font-sans">
+      <Sidebar />
+      
+      {/* --- PERUBAHAN DI SINI --- */}
+      {/* Logika untuk menerapkan layout yang berbeda */}
+      {path === '/chat' ? (
+        // Untuk halaman chat, gunakan layout yang fleksibel tanpa scroll
+        <div className="flex-grow flex overflow-hidden">
+          {currentPage}
+        </div>
+      ) : (
+        // Untuk halaman lain, gunakan layout dengan scroll vertikal
+        <main className="flex-grow overflow-y-auto">
+          {currentPage}
+        </main>
+      )}
+    </div>
+  );
 };
 
-// Komponen App utama yang membungkus semuanya dengan Provider
 function App() {
   return (
     <AuthProvider>

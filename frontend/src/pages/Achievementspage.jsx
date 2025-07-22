@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../components/layout/Navbar';
+// Hapus impor Navbar dari sini
 
 // Data simulasi untuk pencapaian
 const userAchievements = [
@@ -12,29 +12,27 @@ const userAchievements = [
 ];
 
 export default function AchievementsPage() {
+  // Langsung kembalikan konten utama halaman
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <Navbar />
-      <div className="container mx-auto px-6 py-8">
-        <h1 className="text-3xl font-bold text-blue-900 mb-6">Pencapaian Anda</h1>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {userAchievements.map((ach) => (
-            <div 
-              key={ach.id} 
-              className={`bg-white rounded-xl shadow-md p-5 flex items-center transition-opacity ${!ach.unlocked ? 'opacity-40' : ''}`}
-            >
-              <div className="text-5xl mr-5">{ach.icon}</div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-800">{ach.name}</h3>
-                <p className="text-gray-600 text-sm">{ach.description}</p>
-                {ach.unlocked && (
-                   <p className="text-xs font-bold text-green-600 mt-1">TERBUKA</p>
-                )}
-              </div>
+    <div className="container mx-auto px-6 py-8">
+      <h1 className="text-3xl font-bold text-blue-900 mb-6">Pencapaian Anda</h1>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {userAchievements.map((ach) => (
+          <div 
+            key={ach.id} 
+            className={`bg-white rounded-xl shadow-md p-5 flex items-center transition-opacity ${!ach.unlocked ? 'opacity-40' : ''}`}
+          >
+            <div className="text-5xl mr-5">{ach.icon}</div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-800">{ach.name}</h3>
+              <p className="text-gray-600 text-sm">{ach.description}</p>
+              {ach.unlocked && (
+                 <p className="text-xs font-bold text-green-600 mt-1">TERBUKA</p>
+              )}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
