@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ChatList from '../components/chat/ChatList.jsx';
 import ChatWindow from '../components/chat/ChatWindow.jsx';
-import InventoryModal from '../components/chat/InventoryModal.jsx'; // Impor modal inventaris
+import InventoryModal from '../components/chat/InventoryModal.jsx';
 
 // Data Simulasi
 const friendsData = [
@@ -58,10 +58,8 @@ export default function ChatPage() {
   };
 
   return (
-    // --- PERUBAHAN DI SINI ---
-    // Menggunakan React Fragment (<>...</>) sebagai pembungkus utama
     <>
-        <div className="flex h-full w-full">
+        <div className="flex h-full w-full overflow-hidden">
             <div className="w-1/3 max-w-sm flex-shrink-0">
                 <ChatList 
                     friends={friendsData} 
@@ -80,7 +78,6 @@ export default function ChatPage() {
             </div>
         </div>
         
-        {/* Modal sekarang berada di luar div utama, sehingga tidak terjebak */}
         <InventoryModal 
             isOpen={isInventoryOpen}
             onClose={() => setIsInventoryOpen(false)}

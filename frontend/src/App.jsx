@@ -21,7 +21,6 @@ const AppRouter = () => {
   const path = window.location.pathname;
   let currentPage;
 
-  // Tentukan halaman mana yang akan ditampilkan
   switch (path) {
     case '/chat':
       currentPage = <ChatPage />;
@@ -48,18 +47,10 @@ const AppRouter = () => {
       <Sidebar />
       
       {/* --- PERUBAHAN DI SINI --- */}
-      {/* Logika untuk menerapkan layout yang berbeda */}
-      {path === '/chat' ? (
-        // Untuk halaman chat, gunakan layout yang fleksibel tanpa scroll
-        <div className="flex-grow flex overflow-hidden">
-          {currentPage}
-        </div>
-      ) : (
-        // Untuk halaman lain, gunakan layout dengan scroll vertikal
-        <main className="flex-grow overflow-y-auto">
-          {currentPage}
-        </main>
-      )}
+      {/* Tata letak utama sekarang lebih sederhana dan tidak akan berkonflik */}
+      <main className="flex-grow overflow-y-auto">
+        {currentPage}
+      </main>
     </div>
   );
 };
