@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import MessageInput from './MessageInput.jsx';
 
-const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile }) => {
+// TAMBAHKAN onOpenInventory di parameter destructuring
+const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile, onOpenInventory }) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -33,6 +34,18 @@ const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile }) => {
       <div className="flex-grow p-6 overflow-y-auto">
         <div className="space-y-4">
           {messages.map((msg, index) => {
+            // Jika pesan adalah item dari inventory
+            if (msg.type === 'item') {
+              return (
+                <div key={index} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl flex items-center space-x-3 ${msg.sender === 'me' ? 'bg-purple-500 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none border'}`}>
+                    <div className="text-2xl">{msg.itemIcon}</div>
+                    <p className="font-medium">{msg.itemName}</p>
+                  </div>
+                </div>
+              );
+            }
+            
             // Jika pesan adalah file
             if (msg.type === 'file') {
               return (
@@ -60,6 +73,7 @@ const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile }) => {
                 </div>
               );
             }
+            
             // Jika pesan adalah teks
             return (
               <div key={index} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
@@ -73,9 +87,11 @@ const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile }) => {
         </div>
       </div>
       
+      {/* TERUSKAN onOpenInventory ke MessageInput */}
       <MessageInput 
         onSendMessage={onSendMessage} 
         onSendFile={onSendFile}
+        onOpenInventory={onOpenInventory}
         friendName={friend.name} 
       />
     </div>
