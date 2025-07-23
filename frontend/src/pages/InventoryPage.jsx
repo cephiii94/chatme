@@ -1,14 +1,17 @@
 import React from 'react';
-// Hapus impor Navbar dari sini
-
-// Data simulasi untuk inventaris pengguna
-const userInventory = [
-  { id: 1, name: 'Tema Chat "Dasar"', description: 'Tema default yang bersih dan simpel.', icon: '📄' },
-  { id: 2, name: 'Stiker Pack "Emoji Klasik"', description: 'Stiker emoji standar.', icon: '😀' },
-];
+import { useUser } from '../context/UserContext.jsx'; // 1. Impor useUser
 
 export default function InventoryPage() {
-  // Langsung kembalikan konten utama halaman
+  const { profile } = useUser(); // 2. Ambil profil dari context
+
+  // Tampilkan pesan loading jika profil belum ada
+  if (!profile) {
+    return <div className="p-6">Memuat inventaris...</div>;
+  }
+
+  // 3. Gunakan profile.inventory, bukan data simulasi lagi
+  const userInventory = profile.inventory;
+
   return (
     <div className="container mx-auto px-6 py-8">
       <h1 className="text-3xl font-bold text-blue-900 mb-6">Inventaris Anda</h1>
@@ -19,7 +22,7 @@ export default function InventoryPage() {
             <div key={item.id} className="bg-white rounded-xl shadow-md p-6 flex flex-col text-center items-center">
               <div className="text-6xl mb-4">{item.icon}</div>
               <h3 className="text-xl font-bold text-gray-800">{item.name}</h3>
-              <p className="text-gray-600 mt-2 flex-grow">{item.description}</p>
+              <p className="text-gray-600 mt-2 flex-grow">{item.description || `Item tipe: ${item.type}`}</p>
               <button className="mt-4 w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition-colors">
                 Gunakan
               </button>

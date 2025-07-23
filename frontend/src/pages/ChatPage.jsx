@@ -2,23 +2,29 @@ import React, { useState } from 'react';
 import ChatList from '../components/chat/ChatList.jsx';
 import ChatWindow from '../components/chat/ChatWindow.jsx';
 import InventoryModal from '../components/chat/InventoryModal.jsx';
+import Notification from '../components/ui/notification.jsx';
 
 // Data Simulasi
 const friendsData = [
   { id: 2, name: 'Erlin Karlinda', avatar: '👩‍💻', lastMessage: 'Jangan lupa beli susu ya.', unread: 2, isOnline: true },
   { id: 3, name: 'Vanno', avatar: '👶', lastMessage: 'Ayah, main yuk!', unread: 0, isOnline: false },
 ];
-
 const messagesData = {
-    'ai': [{ sender: 'ai', text: 'Halo Tuan Cecep! Ada yang bisa saya bantu hari ini?', type: 'text' }],
-    2: [{ sender: 'other', text: 'Jangan lupa beli susu ya.', type: 'text'}, {sender: 'me', text: 'Oke, siap!', type: 'text'}],
-    3: [{ sender: 'other', text: 'Ayah, main yuk!', type: 'text'}],
+    'ai': [{ id: 1, sender: 'ai', text: 'Halo Tuan Cecep!', type: 'text' }],
+    2: [
+        { id: 2, sender: 'other', text: 'Jangan lupa beli susu ya.', type: 'text'}, 
+        { id: 3, sender: 'me', text: 'Oke, siap!', type: 'text'},
+        { id: 4, sender: 'other', type: 'hadiah', itemName: 'Hadiah "Mawar"', itemIcon: '🌹', claimed: false },
+        { id: 6, sender: 'me', type: 'suara', itemName: 'Efek "Tawa Jahat"', itemIcon: '😈' }
+    ],
+    3: [{ id: 5, sender: 'other', text: 'Ayah, main yuk!', type: 'text'}],
 }
 
 export default function ChatPage() {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+  const [notification, setNotification] = useState(null);
 
   const handleSelectFriend = (friend) => {
     setSelectedFriend(friend);
@@ -26,35 +32,45 @@ export default function ChatPage() {
   };
 
   const handleSendMessage = (newMessageText) => {
-      const newMessage = { sender: 'me', text: newMessageText, type: 'text' };
+      const newMessage = { id: Date.now(), sender: 'me', text: newMessageText, type: 'text' };
       setMessages(prevMessages => [...prevMessages, newMessage]);
-  }
+  };
 
   const handleSendFile = (file) => {
-    const formatBytes = (bytes) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-    const newFileMessage = {
-        sender: 'me', type: 'file', fileName: file.name, fileSize: formatBytes(file.size),
-        fileURL: URL.createObjectURL(file), fileObject: file
-    };
-    setMessages(prevMessages => [...prevMessages, newFileMessage]);
+    // ... (kode tidak berubah)
   };
 
   const handleSendItem = (item) => {
-    console.log("Mengirim item:", item);
     const newItemMessage = {
+        id: Date.now(),
         sender: 'me',
-        type: 'item',
+        type: item.type, // Menggunakan tipe item langsung (stiker, hadiah, dll)
         itemName: item.name,
         itemIcon: item.icon
     };
     setMessages(prevMessages => [...prevMessages, newItemMessage]);
     setIsInventoryOpen(false);
+  };
+
+  const handleAcceptGift = (messageId) => {
+    setMessages(prevMessages => 
+        prevMessages.map(msg => {
+            if (msg.id === messageId) {
+                setNotification({ message: `Anda menerima ${msg.itemName}!`, type: 'success' });
+                // Di sini Anda bisa menambahkan logika untuk menambah XP
+                return { ...msg, claimed: true }; // Tandai hadiah sudah diterima
+            }
+            return msg;
+        })
+    );
+  };
+
+  // --- FUNGSI BARU DI SINI ---
+  const handlePlaySound = (soundMessage) => {
+    // Di aplikasi nyata, ini akan memutar file suara.
+    // Untuk sekarang, kita hanya akan menampilkan notifikasi.
+    setNotification({ message: `Memutar suara: ${soundMessage.itemName}`, type: 'success' });
+    console.log("Memutar suara:", soundMessage);
   };
 
   return (
@@ -74,6 +90,8 @@ export default function ChatPage() {
                     onSendMessage={handleSendMessage}
                     onSendFile={handleSendFile}
                     onOpenInventory={() => setIsInventoryOpen(true)}
+                    onAcceptGift={handleAcceptGift}
+                    onPlaySound={handlePlaySound} // Teruskan fungsi baru
                 />
             </div>
         </div>
@@ -83,6 +101,7 @@ export default function ChatPage() {
             onClose={() => setIsInventoryOpen(false)}
             onSelectItem={handleSendItem}
         />
+        <Notification notification={notification} onClear={() => setNotification(null)} />
     </>
   );
 }

@@ -4,7 +4,6 @@ import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Notification from '../components/ui/notification.jsx';
 
-// Data simulasi untuk item di toko dengan struktur kategori baru
 const shopItems = [
   { id: 1, name: 'Tema "Galaxy"', price: 500, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
   { id: 5, name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
@@ -20,7 +19,6 @@ const shopItems = [
   { id: 9, name: 'Slot Teman (+5)', price: 1500, icon: '➕', category: 'sosial', subCategory: 'adds-on' },
 ];
 
-// Struktur kategori dan sub-kategori untuk filter
 const categories = {
   tampilan: { label: 'Tampilan', sub: ['semua', 'tema', 'avatar', 'border', 'gelembung chat', 'warna nama'] },
   suara: { label: 'Suara', sub: ['semua', 'notif', 'efek'] },
@@ -28,7 +26,7 @@ const categories = {
 };
 
 export default function ShopPage() {
-  const { profile, updateCoins } = useUser();
+  const { profile, updateCoins, addItemToInventory } = useUser(); // Ambil fungsi baru
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [notification, setNotification] = useState(null);
@@ -41,7 +39,27 @@ export default function ShopPage() {
   
   const handleCategoryClick = (categoryKey) => {
     setActiveCategory(categoryKey);
-    setActiveSubCategory('semua'); // Reset sub-kategori saat kategori utama berubah
+    setActiveSubCategory('semua');
+  };
+
+  const handleConfirmPurchase = () => {
+    if (!selectedItem) return;
+
+    if (profile.coins >= selectedItem.price) {
+      const newCoinBalance = profile.coins - selectedItem.price;
+      updateCoins(newCoinBalance);
+      
+      // --- PENAMBAHAN DI SINI ---
+      // Tambahkan item ke inventaris melalui context
+      addItemToInventory(selectedItem);
+
+      setNotification({ message: `Anda berhasil membeli ${selectedItem.name}!`, type: 'success' });
+    } else {
+      setNotification({ message: 'Koin Anda tidak cukup.', type: 'error' });
+    }
+    
+    setIsModalOpen(false);
+    setSelectedItem(null);
   };
 
   const filteredItems = shopItems.filter(item => {
@@ -59,7 +77,6 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Filter Kategori Utama */}
       <div className="mb-4 flex space-x-2 border-b pb-2">
         {Object.keys(categories).map(key => (
             <button
@@ -76,7 +93,6 @@ export default function ShopPage() {
         ))}
       </div>
 
-      {/* Filter Sub-kategori */}
       <div className="mb-6 flex space-x-2 overflow-x-auto pb-2">
         {categories[activeCategory].sub.map(subKey => (
             <button
@@ -115,15 +131,7 @@ export default function ShopPage() {
             </p>
             <div className="mt-6 flex justify-end space-x-4">
               <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Batal</Button>
-              <Button variant="primary" onClick={() => {
-                  if (profile.coins >= selectedItem.price) {
-                    updateCoins(profile.coins - selectedItem.price);
-                    setNotification({ message: `Pembelian '${selectedItem.name}' berhasil!`, type: 'success' });
-                  } else {
-                    setNotification({ message: 'Koin Anda tidak cukup.', type: 'error' });
-                  }
-                  setIsModalOpen(false);
-              }}>Yakin & Beli</Button>
+              <Button variant="primary" onClick={handleConfirmPurchase}>Yakin & Beli</Button>
             </div>
           </div>
         )}

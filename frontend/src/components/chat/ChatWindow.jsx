@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import MessageInput from './MessageInput.jsx';
+import Button from '../ui/Button.jsx';
 
-// TAMBAHKAN onOpenInventory di parameter destructuring
-const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile, onOpenInventory }) => {
+const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile, onOpenInventory, onAcceptGift, onPlaySound }) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -33,61 +33,78 @@ const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile, onOpenIn
 
       <div className="flex-grow p-6 overflow-y-auto">
         <div className="space-y-4">
-          {messages.map((msg, index) => {
-            // Jika pesan adalah item dari inventory
-            if (msg.type === 'item') {
-              return (
-                <div key={index} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl flex items-center space-x-3 ${msg.sender === 'me' ? 'bg-purple-500 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none border'}`}>
-                    <div className="text-2xl">{msg.itemIcon}</div>
-                    <p className="font-medium">{msg.itemName}</p>
+          {messages.map((msg) => {
+            // --- PERUBAHAN UTAMA DI SINI ---
+            // Gunakan switch untuk menangani berbagai tipe pesan
+            switch (msg.type) {
+              case 'stiker':
+              case 'imoji':
+                return (
+                  <div key={msg.id} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                    <div className="text-6xl">{msg.itemIcon}</div>
                   </div>
-                </div>
-              );
-            }
-            
-            // Jika pesan adalah file
-            if (msg.type === 'file') {
-              return (
-                <div key={index} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl flex items-center space-x-3 ${msg.sender === 'me' ? 'bg-green-500 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none border'}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 flex-shrink-0"><path fillRule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a.375.375 0 01-.375-.375V6.75A3.75 3.75 0 009 3H5.625zM12.75 12.75a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V12.75z" clipRule="evenodd" /><path d="M14.25 6.75a2.25 2.25 0 00-2.25-2.25H5.625a.375.375 0 00-.375.375v17.25c0 .207.168.375.375.375h12.75a.375.375 0 00.375-.375V12.75a2.25 2.25 0 00-2.25-2.25h-1.875a.375.375 0 01-.375-.375V6.75z" /></svg>
-                    <div>
-                      <p className="font-bold truncate">{msg.fileName}</p>
-                      <p className="text-sm">{msg.fileSize}</p>
+                );
+              
+              case 'suara':
+                return (
+                   <div key={msg.id} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                     <div className={`max-w-xs p-3 rounded-2xl flex items-center space-x-3 ${msg.sender === 'me' ? 'bg-blue-500 text-white' : 'bg-white border'}`}>
+                       <button onClick={() => onPlaySound(msg)} className="p-2 rounded-full hover:bg-white/20">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                           <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.647c1.295.742 1.295 2.545 0 3.286L7.279 20.99c-1.25.722-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+                         </svg>
+                       </button>
+                       <div className="text-left">
+                         <p className="font-semibold">{msg.itemName}</p>
+                         <p className="text-xs opacity-70">Efek Suara</p>
+                       </div>
+                     </div>
+                   </div>
+                );
+
+              case 'hadiah':
+                return (
+                  <div key={msg.id} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-xs p-4 rounded-2xl text-center ${msg.sender === 'me' ? 'bg-yellow-100' : 'bg-purple-100 border border-purple-200'}`}>
+                      <div className="text-5xl mb-2">{msg.itemIcon}</div>
+                      <p className="text-sm font-semibold text-gray-800">
+                        {msg.sender === 'me' ? `Anda mengirim ${msg.itemName}!` : `${friend.name} mengirimmu ${msg.itemName}!`}
+                      </p>
+                      {msg.sender !== 'me' && (
+                        <Button 
+                          variant={msg.claimed ? "secondary" : "primary"}
+                          onClick={() => !msg.claimed && onAcceptGift(msg.id)}
+                          disabled={msg.claimed}
+                          className="mt-2 text-xs py-1 px-3"
+                        >
+                          {msg.claimed ? 'Diterima' : 'Terima Hadiah'}
+                        </Button>
+                      )}
                     </div>
-                    {/* Tampilkan tombol download hanya jika file diterima (bukan dikirim oleh 'me') */}
-                    {msg.sender !== 'me' && (
-                      <a
-                        href={msg.fileURL}
-                        download={msg.fileName}
-                        className="p-2 rounded-full hover:bg-gray-200"
-                        aria-label="Unduh file"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-600">
-                          <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
-                        </svg>
-                      </a>
-                    )}
                   </div>
-                </div>
-              );
+                );
+              
+              case 'file':
+                return (
+                  <div key={msg.id} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                    {/* ... (kode file tidak berubah) ... */}
+                  </div>
+                );
+
+              default: // 'text'
+                return (
+                  <div key={msg.id} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${msg.sender === 'me' ? 'bg-blue-500 text-white' : 'bg-white border'}`}>
+                      <p>{msg.text}</p>
+                    </div>
+                  </div>
+                );
             }
-            
-            // Jika pesan adalah teks
-            return (
-              <div key={index} className={`flex items-end ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${msg.sender === 'me' ? 'bg-blue-500 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none border'}`}>
-                  <p>{msg.text}</p>
-                </div>
-              </div>
-            );
           })}
           <div ref={messagesEndRef} />
         </div>
       </div>
       
-      {/* TERUSKAN onOpenInventory ke MessageInput */}
       <MessageInput 
         onSendMessage={onSendMessage} 
         onSendFile={onSendFile}
