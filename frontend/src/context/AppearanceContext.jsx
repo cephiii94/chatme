@@ -11,7 +11,7 @@ export const useAppearance = () => {
 const DARK_THEME_ID = 20;
 
 const defaultAppearance = {
-    theme: null,
+    tema: null,  // PERBAIKAN: Gunakan "tema" bukan "theme"
     'warna nama': null,
     'gelembung chat': null,
     avatar: null,
@@ -28,7 +28,11 @@ export const AppearanceProvider = ({ children }) => {
         if (user) {
             try {
                 const storedAppearance = localStorage.getItem(`appearance_${user.id}`);
+                console.log('Loaded from storage:', storedAppearance);
+                
                 const initialAppearance = storedAppearance ? JSON.parse(storedAppearance) : defaultAppearance;
+                console.log('Setting initial appearance:', initialAppearance);
+                
                 setActiveItems(initialAppearance);
             } catch (error) {
                 console.error("Gagal memuat pengaturan tampilan", error);
@@ -44,24 +48,36 @@ export const AppearanceProvider = ({ children }) => {
     // Efek untuk menerapkan tema dan menyimpan ke localStorage
     useEffect(() => {
         if (!isLoading) {
+            console.log('Applying theme. Active tema ID:', activeItems.tema);
+            
             // Terapkan class 'dark' ke elemen <html>
-            if (activeItems.theme === DARK_THEME_ID) {
+            if (activeItems.tema === DARK_THEME_ID) {
+                console.log('Adding dark class...');
                 document.documentElement.classList.add('dark');
             } else {
+                console.log('Removing dark class...');
                 document.documentElement.classList.remove('dark');
             }
+            
             // Simpan ke localStorage jika ada pengguna
             if (user) {
+                console.log('Saving to localStorage:', activeItems);
                 localStorage.setItem(`appearance_${user.id}`, JSON.stringify(activeItems));
             }
         }
     }, [activeItems, isLoading, user]);
 
     const setAppearance = (subCategory, itemId) => {
-        setActiveItems(prev => ({
-            ...prev,
-            [subCategory]: itemId
-        }));
+        console.log('setAppearance called:', subCategory, itemId);
+        
+        setActiveItems(prev => {
+            const newItems = {
+                ...prev,
+                [subCategory]: itemId
+            };
+            console.log('New activeItems will be:', newItems);
+            return newItems;
+        });
     };
     
     const resetAppearanceData = () => {

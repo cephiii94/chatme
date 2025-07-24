@@ -22,11 +22,19 @@ export default function InventoryPage() {
   }
 
   const handleUseAppearanceItem = (item) => {
+    console.log('=== KLIK TEMA ===');
+    console.log('Item diklik:', item);
+    console.log('Current activeItems:', activeItems);
+    console.log('Item subCategory:', item.subCategory);
+    console.log('Is same as current?', activeItems[item.subCategory] === item.id);
+    
     if (activeItems[item.subCategory] === item.id) {
         if (item.id === null) return;
+        console.log('Menonaktifkan tema...');
         setAppearance(item.subCategory, null);
         setNotification({ message: `${item.name} telah dinonaktifkan.`, type: 'info' });
     } else {
+        console.log('Mengaktifkan tema ID:', item.id, 'subCategory:', item.subCategory);
         setAppearance(item.subCategory, item.id);
         setNotification({ message: `${item.name} telah diaktifkan!`, type: 'success' });
     }
@@ -59,7 +67,7 @@ export default function InventoryPage() {
           name: 'Tema Standar',
           icon: '☀️',
           category: 'tampilan',
-          subCategory: 'tema',
+          subCategory: 'tema',  // PENTING: Pastikan ini "tema" bukan "theme"
       };
       filteredInventory.unshift(defaultThemeItem);
   }
@@ -67,6 +75,12 @@ export default function InventoryPage() {
   return (
     <div className="container mx-auto px-6 py-8 dark:bg-gray-900 min-h-full">
       <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-300 mb-6">Inventaris Anda</h1>
+      
+      {/* Debug Info */}
+      <div className="mb-4 p-2 bg-yellow-100 dark:bg-yellow-900 rounded text-xs">
+        <strong>DEBUG:</strong> Active tema: {activeItems.tema || 'null'} | 
+        HTML classes: {document.documentElement.className || 'none'}
+      </div>
       
       {/* UI FILTER */}
       <div className="mb-4 flex space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2">

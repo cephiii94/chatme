@@ -8,3 +8,74 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables untuk berbagai tema */
+:root {
+  /* Tema Default (Light) */
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f9fafb;
+  --theme-text-primary: #111827;
+  --theme-text-secondary: #6b7280;
+  --theme-accent: #3b82f6;
+}
+
+/* Tema Gelap */
+html.dark {
+  --theme-bg-primary: #1f2937;
+  --theme-bg-secondary: #111827;
+  --theme-text-primary: #f9fafb;
+  --theme-text-secondary: #d1d5db;
+  --theme-accent: #60a5fa;
+}
+
+/* Tema Galaxy (untuk masa depan) */
+html.theme-galaxy {
+  --theme-bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --theme-bg-secondary: #4c1d95;
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #e0e7ff;
+  --theme-accent: #a855f7;
+}
+
+/* Custom utility classes untuk tema */
+.theme-bg-primary {
+  background: var(--theme-bg-primary);
+}
+
+.theme-bg-secondary {
+  background: var(--theme-bg-secondary);
+}
+
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-accent {
+  color: var(--theme-accent);
+}
+
+/* Animasi smooth untuk transisi tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom scrollbar untuk dark mode */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
