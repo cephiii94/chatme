@@ -18,22 +18,20 @@ exports.getShopItems = async (req, res) => {
 };
 
 // --- Fungsi untuk Membeli Item ---
-// Catatan: Fungsi ini mengasumsikan Anda memiliki middleware otentikasi
-// yang memverifikasi JWT dan melampirkan data pengguna (seperti ID) ke objek `req`.
 exports.buyItem = async (req, res) => {
   try {
-    // 1. Dapatkan ID item dari parameter URL (e.g., /api/shop/buy/item-id-disini)
-    const { itemId } = req.params;
-    // 2. Dapatkan ID pengguna dari token JWT yang sudah diverifikasi oleh middleware
+    // Dapatkan ID item dari request body
+    const { itemId } = req.body; 
+    // Dapatkan ID pengguna dari token JWT yang sudah diverifikasi
     const userId = req.user.id;
 
-    // 3. Cari item dan pengguna secara bersamaan untuk efisiensi
+    // Cari item dan pengguna secara bersamaan untuk efisiensi
     const [item, user] = await Promise.all([
       Item.findById(itemId),
       User.findById(userId)
     ]);
 
-    // 4. Validasi apakah item dan pengguna ditemukan
+    // Validasi apakah item dan pengguna ditemukan
     if (!item) {
       return res.status(404).json({ message: 'Item tidak ditemukan.' });
     }
@@ -41,25 +39,38 @@ exports.buyItem = async (req, res) => {
       return res.status(404).json({ message: 'Pengguna tidak ditemukan.' });
     }
 
-    // 5. Periksa apakah pengguna memiliki cukup koin
+    // --- LOGIKA UTAMA DIMULAI DI SINI ---
+
+    // 1. Tentukan kategori item yang dapat dibeli berulang kali
+    const reusableCategories = ['Hadiah', 'Adds-On'];
+
+    // 2. Periksa apakah item ini dapat dibeli berulang kali
+    const isReusable = reusableCategories.includes(item.category);
+
+    // 3. Jika BUKAN item yang bisa dibeli ulang, periksa apakah pengguna sudah memilikinya
+    if (!isReusable && user.inventory.includes(itemId)) {
+      return res.status(400).json({ message: 'Anda sudah memiliki item ini.' });
+    }
+
+    // 4. Periksa apakah pengguna memiliki cukup koin
     if (user.coins < item.price) {
       return res.status(400).json({ message: 'Koin Anda tidak cukup untuk membeli item ini.' });
     }
 
-    // 6. Kurangi koin pengguna dengan harga item
-    user.coins -= item.price;
+    // 5. Lanjutkan transaksi
+    user.coins -= item.price; // Kurangi koin pengguna
+    user.inventory.push(item._id); // Tambahkan item ke inventaris pengguna
 
-    // TODO: Tambahkan logika untuk menambahkan item ke inventaris pengguna.
-    // Saat ini, kita belum memiliki skema inventaris, jadi kita hanya mengurangi koin.
-    // Contoh: user.inventory.push(item._id);
-
-    // 7. Simpan perubahan pada data pengguna ke database
+    // 6. Simpan perubahan pada data pengguna ke database
     await user.save();
 
-    // 8. Kirim respons berhasil beserta jumlah koin terbaru
+    // 7. Kirim respons berhasil
     res.status(200).json({
       message: `Pembelian '${item.name}' berhasil!`,
-      newCoinBalance: user.coins
+      user: {
+        coins: user.coins,
+        inventory: user.inventory
+      }
     });
 
   } catch (error) {

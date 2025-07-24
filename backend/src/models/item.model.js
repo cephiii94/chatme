@@ -3,10 +3,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Mendefinisikan Skema Item (itemSchema)
-// Skema ini menentukan struktur dokumen untuk koleksi 'items' di MongoDB.
 const itemSchema = new Schema({
   // Nama unik untuk item.
-  // Wajib diisi dan tidak boleh ada duplikat.
   name: {
     type: String,
     required: [true, 'Nama item wajib diisi.'],
@@ -22,23 +20,34 @@ const itemSchema = new Schema({
   },
 
   // Harga item dalam bentuk koin.
-  // Wajib diisi dan tidak boleh bernilai negatif.
   price: {
     type: Number,
     required: [true, 'Harga item wajib diisi.'],
     min: [0, 'Harga tidak boleh negatif.']
   },
 
-  // (Opsional) URL ke gambar atau ikon untuk item.
+  // URL ke gambar atau ikon untuk item.
   imageUrl: {
     type: String,
     trim: true,
-    default: '' // URL gambar default atau kosong
+    default: ''
+  },
+  
+  // --- PERUBAHAN DI SINI ---
+  // Menambahkan field 'category' untuk mengklasifikasikan item.
+  // 'enum' membatasi nilai yang bisa dimasukkan ke dalam field ini.
+  // Ini penting untuk logika pembelian kita nanti.
+  category: {
+    type: String,
+    required: [true, 'Kategori item wajib diisi'],
+    enum: ['Tema', 'Avatar', 'Hadiah', 'Adds-On', 'Lainnya'],
+    default: 'Lainnya'
   }
+
 }, { timestamps: true });
 
 // Membuat model 'Item' dari skema yang telah didefinisikan.
 const Item = mongoose.model('Item', itemSchema);
 
-// Mengekspor model Item agar bisa digunakan di file lain (misalnya, di controller toko)
+// Mengekspor model Item agar bisa digunakan di file lain
 module.exports = Item;
