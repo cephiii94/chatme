@@ -4,7 +4,9 @@ import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Notification from '../components/ui/notification.jsx';
 
+// Daftar item yang dijual di toko, termasuk item tema baru
 const shopItems = [
+  { id: 20, name: 'Tema "Gelap"', price: 500, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
   { id: 1, name: 'Tema "Galaxy"', price: 500, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
   { id: 5, name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
   { id: 7, name: 'Gelembung "Komik"', price: 350, icon: '💥', category: 'tampilan', subCategory: 'gelembung chat' },
@@ -26,7 +28,7 @@ const categories = {
 };
 
 export default function ShopPage() {
-  const { profile, updateCoins, addItemToInventory } = useUser(); // Ambil fungsi baru
+  const { profile, inventory, updateCoins, addItemToInventory } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [notification, setNotification] = useState(null);
@@ -36,7 +38,7 @@ export default function ShopPage() {
   if (!profile) {
     return <div className="p-6">Memuat data toko...</div>;
   }
-  
+
   const handleCategoryClick = (categoryKey) => {
     setActiveCategory(categoryKey);
     setActiveSubCategory('semua');
@@ -45,14 +47,15 @@ export default function ShopPage() {
   const handleConfirmPurchase = () => {
     if (!selectedItem) return;
 
-    if (profile.coins >= selectedItem.price) {
+    const isOwned = inventory.some(invItem => invItem.id === selectedItem.id);
+    const isRebuyable = selectedItem.subCategory === 'hadiah' || selectedItem.subCategory === 'adds-on';
+
+    if (isOwned && !isRebuyable) {
+      setNotification({ message: 'Anda sudah memiliki item ini.', type: 'info' });
+    } else if (profile.coins >= selectedItem.price) {
       const newCoinBalance = profile.coins - selectedItem.price;
       updateCoins(newCoinBalance);
-      
-      // --- PENAMBAHAN DI SINI ---
-      // Tambahkan item ke inventaris melalui context
       addItemToInventory(selectedItem);
-
       setNotification({ message: `Anda berhasil membeli ${selectedItem.name}!`, type: 'success' });
     } else {
       setNotification({ message: 'Koin Anda tidak cukup.', type: 'error' });
@@ -69,64 +72,59 @@ export default function ShopPage() {
   });
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="container mx-auto px-6 py-8 dark:bg-gray-900">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-blue-900">Toko Item</h1>
+        <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-300">Toko Item</h1>
         <div className="text-lg font-semibold bg-yellow-200 text-yellow-800 px-4 py-2 rounded-lg">
           Koin Anda: {profile.coins} 💰
         </div>
       </div>
 
-      <div className="mb-4 flex space-x-2 border-b pb-2">
+      {/* UI FILTER */}
+      <div className="mb-4 flex space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2">
         {Object.keys(categories).map(key => (
-            <button
-                key={key}
-                onClick={() => handleCategoryClick(key)}
-                className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
-                    activeCategory === key 
-                    ? 'bg-blue-500 text-white' 
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-            >
+            <button key={key} onClick={() => handleCategoryClick(key)} className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${activeCategory === key ? 'bg-blue-500 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
                 {categories[key].label}
             </button>
         ))}
       </div>
-
       <div className="mb-6 flex space-x-2 overflow-x-auto pb-2">
         {categories[activeCategory].sub.map(subKey => (
-            <button
-                key={subKey}
-                onClick={() => setActiveSubCategory(subKey)}
-                className={`px-4 py-2 text-xs font-medium rounded-full transition-colors flex-shrink-0 ${
-                    activeSubCategory === subKey 
-                    ? 'bg-gray-700 text-white' 
-                    : 'bg-white text-gray-600 hover:bg-gray-100'
-                }`}
-            >
+            <button key={subKey} onClick={() => setActiveSubCategory(subKey)} className={`px-4 py-2 text-xs font-medium rounded-full transition-colors flex-shrink-0 ${activeSubCategory === subKey ? 'bg-gray-700 text-white' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'}`}>
                 {subKey.replace(/ /g, '-')}
             </button>
         ))}
       </div>
       
+      {/* GRID ITEM */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredItems.map((item) => (
-          <div key={item.id} className="bg-white rounded-xl shadow-md p-6 flex flex-col text-center items-center">
-            <div className="text-6xl mb-4">{item.icon}</div>
-            <h3 className="text-xl font-bold text-gray-800">{item.name}</h3>
-            <p className="text-sm text-gray-500 capitalize mb-2">({item.subCategory})</p>
-            <p className="text-2xl font-bold text-blue-600 my-4">{item.price} Koin</p>
-            <Button onClick={() => { setSelectedItem(item); setIsModalOpen(true); }} variant="primary">
-              Beli
-            </Button>
-          </div>
-        ))}
+        {filteredItems.map((item) => {
+          const isOwned = inventory.some(invItem => invItem.id === item.id);
+          const isRebuyable = item.subCategory === 'hadiah' || item.subCategory === 'adds-on';
+          const canPurchase = !isOwned || isRebuyable;
+          return (
+            <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col text-center items-center">
+              <div className="text-6xl mb-4">{item.icon}</div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{item.name}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">({item.subCategory})</p>
+              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 my-4">{item.price} Koin</p>
+              <Button
+                onClick={() => { setSelectedItem(item); setIsModalOpen(true); }}
+                variant="primary"
+                disabled={!canPurchase}
+                className={!canPurchase ? 'bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed' : ''}
+              >
+                {canPurchase ? 'Beli' : 'Dimiliki'}
+              </Button>
+            </div>
+          );
+        })}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Konfirmasi Pembelian">
         {selectedItem && (
           <div>
-            <p className="text-gray-700">
+            <p className="text-gray-700 dark:text-gray-300">
               Apakah Anda yakin ingin membeli <strong>{selectedItem.name}</strong> seharga <strong>{selectedItem.price} koin</strong>?
             </p>
             <div className="mt-6 flex justify-end space-x-4">

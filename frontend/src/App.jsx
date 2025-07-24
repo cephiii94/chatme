@@ -1,9 +1,10 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
+import { ChatProvider } from './context/ChatContext.jsx';
+import { AppearanceProvider } from './context/AppearanceContext.jsx';
 
 import Sidebar from './components/layout/Sidebar.jsx'; 
-
 import LoginPage from './pages/LoginPage.jsx';
 import ChatPage from './pages/ChatPage.jsx';
 import ShopPage from './pages/ShopPage.jsx';
@@ -43,11 +44,9 @@ const AppRouter = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans">
+    // Menambahkan class dark mode ke container utama
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 font-sans">
       <Sidebar />
-      
-      {/* --- PERUBAHAN DI SINI --- */}
-      {/* Tata letak utama sekarang lebih sederhana dan tidak akan berkonflik */}
       <main className="flex-grow overflow-y-auto">
         {currentPage}
       </main>
@@ -59,7 +58,11 @@ function App() {
   return (
     <AuthProvider>
       <UserProvider>
-        <AppRouter />
+        <ChatProvider>
+          <AppearanceProvider>
+            <AppRouter />
+          </AppearanceProvider>
+        </ChatProvider>
       </UserProvider>
     </AuthProvider>
   );
