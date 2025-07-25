@@ -15,6 +15,14 @@ const THEME_CONFIG = {
     21: { name: 'Tema Soft Blue', className: 'theme-softblue' }, // TEMA BARU
 };
 
+// Mapping warna nama berdasarkan id item
+export const WARNA_NAMA_MAP = {
+    'wn-01': 'rainbow', // pelangi, handle khusus di komponen
+    'wn-02': '#2563eb', // biru
+    'wn-03': '#22c55e', // hijau
+    null: '',     // default
+};
+
 const defaultAppearance = {
     tema: null,
     'warna nama': null,

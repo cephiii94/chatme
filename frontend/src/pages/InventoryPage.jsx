@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext.jsx';
-import { useAppearance } from '../context/AppearanceContext.jsx';
+import { useAppearance, WARNA_NAMA_MAP } from '../context/AppearanceContext.jsx';
 import Notification from '../components/ui/notification.jsx';
 
 const categories = {
@@ -61,15 +61,77 @@ export default function InventoryPage() {
     return true;
   });
 
-  if (activeCategory === 'tampilan' && (activeSubCategory === 'semua' || activeSubCategory === 'tema')) {
-      const defaultThemeItem = {
-          id: null,
-          name: 'Tema Standar',
-          icon: '☀️',
-          category: 'tampilan',
-          subCategory: 'tema',  // PENTING: Pastikan ini "tema" bukan "theme"
-      };
-      filteredInventory.unshift(defaultThemeItem);
+  if (activeCategory === 'tampilan') {
+    // Default items for tampilan subcategories
+    const defaultItems = [
+      {
+        id: null,
+        name: 'Avatar Standar',
+        icon: '👤',
+        category: 'tampilan',
+        subCategory: 'avatar',
+      },
+      {
+        id: null,
+        name: 'Border Standar',
+        icon: '⬜',
+        category: 'tampilan',
+        subCategory: 'border',
+      },
+      {
+        id: null,
+        name: 'Gelembung Chat Standar',
+        icon: '💬',
+        category: 'tampilan',
+        subCategory: 'gelembung chat',
+      },
+      {
+        id: null,
+        name: 'Warna Nama Standar',
+        icon: '🔤',
+        category: 'tampilan',
+        subCategory: 'warna nama',
+      },
+      {
+        id: null,
+        name: 'Tema Standar',
+        icon: '☀️',
+        category: 'tampilan',
+        subCategory: 'tema',
+      },
+    ];
+    // Tampilkan item default hanya pada subkategori yang sesuai (bukan 'semua')
+    if (activeSubCategory !== 'semua') {
+      const match = defaultItems.find(def => def.subCategory === activeSubCategory);
+      if (match) {
+        filteredInventory = [match, ...filteredInventory.filter(item => !(item.id === null && item.subCategory === match.subCategory))];
+      }
+    }
+  }
+  if (activeCategory === 'suara') {
+    // Default items for suara subcategories
+    const defaultItems = [
+      {
+        id: null,
+        name: 'Notifikasi Standar',
+        icon: '🔔',
+        category: 'suara',
+        subCategory: 'notif',
+      },
+      {
+        id: null,
+        name: 'Efek Standar',
+        icon: '🎵',
+        category: 'suara',
+        subCategory: 'efek',
+      },
+    ];
+    if (activeSubCategory !== 'semua') {
+      const match = defaultItems.find(def => def.subCategory === activeSubCategory);
+      if (match) {
+        filteredInventory = [match, ...filteredInventory.filter(item => !(item.id === null && item.subCategory === match.subCategory))];
+      }
+    }
   }
 
   return (
@@ -128,7 +190,14 @@ export default function InventoryPage() {
               <div key={item.id === null ? 'default-theme' : `${item.id}-${index}`} className="relative bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col text-center items-center transform hover:scale-105 transition-transform duration-300">
                 {item.quantity > 1 && (<div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">x{item.quantity}</div>)}
                 <div className="text-6xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{item.name}</h3>
+                {/* Preview warna nama jika item warna nama */}
+                {item.subCategory === 'warna nama' && item.id === 'wn-01' ? (
+                  <h3 className="text-xl font-bold rainbow-text">{item.name}</h3>
+                ) : item.subCategory === 'warna nama' ? (
+                  <h3 className="text-xl font-bold" style={{ color: WARNA_NAMA_MAP[item.id] || undefined }}>{item.name}</h3>
+                ) : (
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{item.name}</h3>
+                )}
                 <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2 flex-grow">({item.subCategory})</p>
                 <button className={`mt-4 w-full text-white py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${buttonClass}`} onClick={buttonAction} disabled={buttonDisabled}>
                   {buttonText}

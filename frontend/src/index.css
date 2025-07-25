@@ -136,3 +136,20 @@ html.theme-softblue ::-webkit-scrollbar-thumb {
 html.theme-softblue ::-webkit-scrollbar-thumb:hover {
   background: rgba(37, 99, 235, 0.8);
 }
+
+/* Efek rainbow untuk teks warna nama pelangi */
+.rainbow-text {
+  background: linear-gradient(90deg, #ff0000, #ff9900, #ffee00, #33ff00, #00ffee, #0066ff, #cc00ff, #ff0080, #ff0000);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-move 3s linear infinite;
+}
+
+@keyframes rainbow-move {
+  to {
+    background-position: 200% center;
+  }
+}

@@ -3,44 +3,47 @@ import { useUser } from '../context/UserContext.jsx';
 import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Notification from '../components/ui/notification.jsx';
+import { WARNA_NAMA_MAP } from '../context/AppearanceContext.jsx';
 
 // Daftar item yang dijual di toko, termasuk item tema baru
 const shopItems = [
   // tema
-  { id: 20, name: 'Tema "Gelap"', price: 500, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
-  { id: 1, name: 'Tema "Galaxy"', price: 500, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
-  { id: 21, name: 'Tema "Soft Blue"', price: 600, icon: '💙', category: 'tampilan', subCategory: 'tema' },
+  { id: 'tm-01', name: 'Tema "Gelap"', price: 500, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
+  { id: 'tm-02', name: 'Tema "Galaxy"', price: 500, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
+  { id: 'tm-03', name: 'Tema "Soft Blue"', price: 600, icon: '💙', category: 'tampilan', subCategory: 'tema' },
  
   // warna nama
-  { id: 5, name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-01', name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-02', name: 'Warna Nama "Biru"', price: 700, icon: '🔵', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-03', name: 'Warna Nama "Hijau"', price: 700, icon: '🟢', category: 'tampilan', subCategory: 'warna nama' },
 
   // gelembung chat
-  { id: 7, name: 'Gelembung "Komik"', price: 350, icon: '💥', category: 'tampilan', subCategory: 'gelembung chat' },
+  { id: 'boob-01', name: 'Gelembung "Komik"', price: 350, icon: '💥', category: 'tampilan', subCategory: 'gelembung chat' },
 
   // avatar
-  { id: 12, name: 'Avatar "Astronot"', price: 400, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
+  { id: 'ava-01', name: 'Avatar "Astronot"', price: 400, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
 
   // border
-  { id: 4, name: 'Bingkai "Emas"', price: 1000, icon: '🖼️', category: 'tampilan', subCategory: 'border' },
-  { id: 6, name: 'Bingkai "Api"', price: 1200, icon: '🔥', category: 'tampilan', subCategory: 'border' },
+  { id: 'border-01', name: 'Bingkai "Emas"', price: 1000, icon: '🖼️', category: 'tampilan', subCategory: 'border' },
+  { id: 'border-02', name: 'Bingkai "Api"', price: 1200, icon: '🔥', category: 'tampilan', subCategory: 'border' },
 
   // notif
-  { id: 3, name: 'Notif "Retro"', price: 300, icon: '👾', category: 'suara', subCategory: 'notif' },
+  { id: 'not-01', name: 'Notif "Retro"', price: 300, icon: '👾', category: 'suara', subCategory: 'notif' },
 
   //efek
-  { id: 13, name: 'Efek "Tawa Jahat"', price: 100, icon: '😂', category: 'suara', subCategory: 'efek' },
+  { id: 'ef-01', name: 'Efek "Tawa Jahat"', price: 100, icon: '😂', category: 'suara', subCategory: 'efek' },
 
   // stiker
-  { id: 2, name: 'Stiker "Kucing Lucu"', price: 250, icon: '😻', category: 'sosial', subCategory: 'stiker' },
+  { id: 'stk-01', name: 'Stiker "Kucing Lucu"', price: 250, icon: '😻', category: 'sosial', subCategory: 'stiker' },
 
   //imoji
-  { id: 8, name: 'Emoji "Gamer"', price: 200, icon: '🎮', category: 'sosial', subCategory: 'imoji' },
+  { id: 'emj-01', name: 'Emoji "Gamer"', price: 200, icon: '🎮', category: 'sosial', subCategory: 'imoji' },
 
   // hadiah
-  { id: 10, name: 'Hadiah "Mawar"', price: 50, icon: '🌹', category: 'sosial', subCategory: 'hadiah' },
+  { id: 'rew-01', name: 'Hadiah "Mawar"', price: 50, icon: '🌹', category: 'sosial', subCategory: 'hadiah' },
 
   // adds-on
-  { id: 9, name: 'Slot Teman (+5)', price: 1500, icon: '➕', category: 'sosial', subCategory: 'adds-on' },
+  { id: 'adds-01', name: 'Slot Teman (+5)', price: 1500, icon: '➕', category: 'sosial', subCategory: 'adds-on' },
 ];
 
 const categories = {
@@ -127,7 +130,14 @@ export default function ShopPage() {
           return (
             <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col text-center items-center">
               <div className="text-6xl mb-4">{item.icon}</div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{item.name}</h3>
+              {/* Preview warna nama jika item warna nama */}
+              {item.subCategory === 'warna nama' && item.id === 'wn-01' ? (
+                <h3 className="text-xl font-bold rainbow-text">{item.name}</h3>
+              ) : item.subCategory === 'warna nama' ? (
+                <h3 className="text-xl font-bold" style={{ color: WARNA_NAMA_MAP[item.id] || undefined }}>{item.name}</h3>
+              ) : (
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{item.name}</h3>
+              )}
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">({item.subCategory})</p>
               <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 my-4">{item.price} Koin</p>
               <Button

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useUser } from '../../context/UserContext.jsx';
 import { useChat } from '../../context/ChatContext.jsx';
-import { useAppearance } from '../../context/AppearanceContext.jsx';
+import { useAppearance, WARNA_NAMA_MAP } from '../../context/AppearanceContext.jsx';
 import Modal from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 
@@ -20,7 +20,8 @@ const Sidebar = () => {
     const { logout } = useAuth();
     const { profile, resetUserData } = useUser();
     const { resetChatData } = useChat();
-    const { resetAppearanceData } = useAppearance();
+    const { resetAppearanceData, activeItems } = useAppearance();
+    const warnaNamaAktif = WARNA_NAMA_MAP[activeItems && activeItems['warna nama']] || '';
 
     if (!profile) {
         return <div className="w-20 h-screen bg-white shadow-lg dark:bg-gray-900"></div>;
@@ -73,7 +74,11 @@ const Sidebar = () => {
                         </div>
                         {isExpanded && (
                             <div className="ml-3 overflow-hidden">
-                                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{profile.username}</p>
+                                {activeItems['warna nama'] === 'wn-01' ? (
+                                    <p className="text-sm font-semibold truncate rainbow-text">{profile.username}</p>
+                                ) : (
+                                    <p className="text-sm font-semibold truncate" style={warnaNamaAktif ? { color: warnaNamaAktif } : {}}>{profile.username}</p>
+                                )}
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Level {profile.level || 1}</p>
                             </div>
                         )}
@@ -87,7 +92,7 @@ const Sidebar = () => {
                     <div className="w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-300 text-4xl mx-auto mb-4 ring-4 ring-offset-2 ring-blue-400 dark:ring-blue-600">
                         {profile.username.charAt(0).toUpperCase()}
                     </div>
-                    <h2 className="text-2xl font-bold dark:text-gray-100">{profile.username}</h2>
+                    <h2 className={activeItems['warna nama'] === 'wn-01' ? "text-2xl font-bold rainbow-text" : "text-2xl font-bold dark:text-gray-100"} style={activeItems['warna nama'] === 'wn-01' ? {} : (warnaNamaAktif ? { color: warnaNamaAktif } : {})}>{profile.username}</h2>
                     <p className="text-sm font-bold text-blue-500 dark:text-blue-400 mb-2">Level {profile.level || 1}</p>
                     <p className="text-gray-600 dark:text-gray-400">{profile.email}</p>
                     <div className="mt-4 bg-yellow-100 text-yellow-800 text-lg font-semibold py-2 px-4 rounded-full inline-block">
