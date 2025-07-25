@@ -7,11 +7,16 @@ export const useAppearance = () => {
     return useContext(AppearanceContext);
 };
 
-// Definisikan ID untuk tema gelap kita
-const DARK_THEME_ID = 20;
+// TAMBAHAN BARU: Konfigurasi tema yang lebih lengkap
+const THEME_CONFIG = {
+    null: { name: 'Tema Standar', className: '' },
+    20: { name: 'Tema Gelap', className: 'dark' },
+    1: { name: 'Tema Galaxy', className: 'theme-galaxy' },
+    21: { name: 'Tema Soft Blue', className: 'theme-softblue' }, // TEMA BARU
+};
 
 const defaultAppearance = {
-    tema: null,  // PERBAIKAN: Gunakan "tema" bukan "theme"
+    tema: null,
     'warna nama': null,
     'gelembung chat': null,
     avatar: null,
@@ -45,18 +50,24 @@ export const AppearanceProvider = ({ children }) => {
         }
     }, [user]);
 
-    // Efek untuk menerapkan tema dan menyimpan ke localStorage
+    // PERBAIKAN: Efek untuk menerapkan tema berdasarkan konfigurasi
     useEffect(() => {
         if (!isLoading) {
             console.log('Applying theme. Active tema ID:', activeItems.tema);
             
-            // Terapkan class 'dark' ke elemen <html>
-            if (activeItems.tema === DARK_THEME_ID) {
-                console.log('Adding dark class...');
-                document.documentElement.classList.add('dark');
-            } else {
-                console.log('Removing dark class...');
-                document.documentElement.classList.remove('dark');
+            // Reset semua class tema
+            const htmlElement = document.documentElement;
+            Object.values(THEME_CONFIG).forEach(theme => {
+                if (theme.className) {
+                    htmlElement.classList.remove(theme.className);
+                }
+            });
+            
+            // Terapkan tema yang aktif
+            const currentTheme = THEME_CONFIG[activeItems.tema];
+            if (currentTheme && currentTheme.className) {
+                console.log('Adding theme class:', currentTheme.className);
+                htmlElement.classList.add(currentTheme.className);
             }
             
             // Simpan ke localStorage jika ada pengguna
@@ -83,7 +94,15 @@ export const AppearanceProvider = ({ children }) => {
     const resetAppearanceData = () => {
         if (user) {
             localStorage.removeItem(`appearance_${user.id}`);
-            document.documentElement.classList.remove('dark');
+            
+            // Reset semua class tema
+            const htmlElement = document.documentElement;
+            Object.values(THEME_CONFIG).forEach(theme => {
+                if (theme.className) {
+                    htmlElement.classList.remove(theme.className);
+                }
+            });
+            
             setActiveItems(defaultAppearance);
         }
     };
@@ -93,6 +112,7 @@ export const AppearanceProvider = ({ children }) => {
         isLoading,
         setAppearance,
         resetAppearanceData,
+        THEME_CONFIG, // Export untuk digunakan komponen lain
     };
 
     return (

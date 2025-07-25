@@ -1,9 +1,3 @@
-/*
- * File ini mengimpor tiga lapisan utama dari Tailwind CSS.
- * 1. @tailwind base: Mereset gaya dasar browser agar konsisten.
- * 2. @tailwind components: Memuat kelas-kelas komponen dari Tailwind.
- * 3. @tailwind utilities: Memuat kelas-kelas utilitas (seperti text-center, bg-blue-500, dll.)
- */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,6 +19,51 @@ html.dark {
   --theme-text-primary: #f9fafb;
   --theme-text-secondary: #d1d5db;
   --theme-accent: #60a5fa;
+}
+
+/* TAMBAHAN BARU: Tema Soft Blue */
+html.theme-softblue {
+  /* Background dengan gradasi biru lembut */
+  --theme-bg-primary: #6ec4e6;
+  --theme-bg-secondary: #dbeafe;
+  --theme-text-primary: #1e3a8a;
+  --theme-text-secondary: #3730a3;
+  --theme-accent: #2563eb;
+  
+  /* Override background untuk elemen utama */
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+}
+
+/* Styling khusus untuk tema soft blue */
+html.theme-softblue body {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  min-height: 100vh;
+}
+
+html.theme-softblue .container {
+  background: rgba(239, 246, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+}
+
+/* Card styling untuk soft blue theme */
+html.theme-softblue .bg-white {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(147, 197, 253, 0.3);
+}
+
+/* Text colors untuk soft blue theme */
+html.theme-softblue .text-blue-900 {
+  color: #1e3a8a !important;
+}
+
+html.theme-softblue .text-gray-800 {
+  color: #1e3a8a !important;
+}
+
+html.theme-softblue .text-gray-600 {
+  color: #3730a3 !important;
 }
 
 /* Tema Galaxy (untuk masa depan) */
@@ -78,4 +117,22 @@ html.dark ::-webkit-scrollbar-thumb {
 
 html.dark ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+/* Custom scrollbar untuk soft blue theme */
+html.theme-softblue ::-webkit-scrollbar {
+  width: 8px;
+}
+
+html.theme-softblue ::-webkit-scrollbar-track {
+  background: rgba(191, 219, 254, 0.5);
+}
+
+html.theme-softblue ::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.6);
+  border-radius: 4px;
+}
+
+html.theme-softblue ::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.8);
 }

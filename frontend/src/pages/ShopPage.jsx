@@ -6,18 +6,40 @@ import Notification from '../components/ui/notification.jsx';
 
 // Daftar item yang dijual di toko, termasuk item tema baru
 const shopItems = [
+  // tema
   { id: 20, name: 'Tema "Gelap"', price: 500, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
   { id: 1, name: 'Tema "Galaxy"', price: 500, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
+  { id: 21, name: 'Tema "Soft Blue"', price: 600, icon: '💙', category: 'tampilan', subCategory: 'tema' },
+ 
+  // warna nama
   { id: 5, name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
+
+  // gelembung chat
   { id: 7, name: 'Gelembung "Komik"', price: 350, icon: '💥', category: 'tampilan', subCategory: 'gelembung chat' },
+
+  // avatar
   { id: 12, name: 'Avatar "Astronot"', price: 400, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
+
+  // border
   { id: 4, name: 'Bingkai "Emas"', price: 1000, icon: '🖼️', category: 'tampilan', subCategory: 'border' },
   { id: 6, name: 'Bingkai "Api"', price: 1200, icon: '🔥', category: 'tampilan', subCategory: 'border' },
+
+  // notif
   { id: 3, name: 'Notif "Retro"', price: 300, icon: '👾', category: 'suara', subCategory: 'notif' },
+
+  //efek
   { id: 13, name: 'Efek "Tawa Jahat"', price: 100, icon: '😂', category: 'suara', subCategory: 'efek' },
+
+  // stiker
   { id: 2, name: 'Stiker "Kucing Lucu"', price: 250, icon: '😻', category: 'sosial', subCategory: 'stiker' },
+
+  //imoji
   { id: 8, name: 'Emoji "Gamer"', price: 200, icon: '🎮', category: 'sosial', subCategory: 'imoji' },
+
+  // hadiah
   { id: 10, name: 'Hadiah "Mawar"', price: 50, icon: '🌹', category: 'sosial', subCategory: 'hadiah' },
+
+  // adds-on
   { id: 9, name: 'Slot Teman (+5)', price: 1500, icon: '➕', category: 'sosial', subCategory: 'adds-on' },
 ];
 
