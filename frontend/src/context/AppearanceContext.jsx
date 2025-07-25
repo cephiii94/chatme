@@ -10,9 +10,9 @@ export const useAppearance = () => {
 // TAMBAHAN BARU: Konfigurasi tema yang lebih lengkap
 const THEME_CONFIG = {
     null: { name: 'Tema Standar', className: '' },
-    20: { name: 'Tema Gelap', className: 'dark' },
-    1: { name: 'Tema Galaxy', className: 'theme-galaxy' },
-    21: { name: 'Tema Soft Blue', className: 'theme-softblue' }, // TEMA BARU
+    'tm-01': { name: 'Tema Gelap', className: 'dark' },
+    'tm-02': { name: 'Tema Galaxy', className: 'theme-galaxy' },
+    'tm-03': { name: 'Tema Soft Blue', className: 'theme-softblue' }, // TEMA BARU
 };
 
 // Mapping warna nama berdasarkan id item
