@@ -3,7 +3,17 @@ import { useUser } from '../context/UserContext.jsx';
 import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Notification from '../components/ui/Notification.jsx';
-import { WARNA_NAMA_MAP } from '../context/AppearanceContext.jsx';
+import { WARNA_NAMA_MAP, AVATAR_MAP } from '../context/AppearanceContext.jsx';
+import Avatar from '../components/ui/Avatar.jsx';
+
+// Size mapping untuk preview avatar
+const sizeClasses = {
+  sm: 'w-8 h-8',
+  md: 'w-10 h-10',
+  lg: 'w-12 h-12',
+  xl: 'w-16 h-16',
+  '2xl': 'w-24 h-24'
+};
 
 // Daftar item yang dijual di toko, termasuk item tema baru
 const shopItems = [
@@ -22,6 +32,8 @@ const shopItems = [
 
   // avatar
   { id: 'ava-01', name: 'Avatar "Astronot"', price: 400, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
+  { id: 'ava-02', name: 'Avatar "Kucing"', price: 350, icon: '🐱', category: 'tampilan', subCategory: 'avatar' },
+  { id: 'ava-03', name: 'Avatar "Kustom"', price: 500, icon: '🖼️', category: 'tampilan', subCategory: 'avatar' },
 
   // border
   { id: 'border-01', name: 'Bingkai "Emas"', price: 1000, icon: '🖼️', category: 'tampilan', subCategory: 'border' },
@@ -129,7 +141,31 @@ export default function ShopPage() {
           const canPurchase = !isOwned || isRebuyable;
           return (
             <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col text-center items-center">
-              <div className="text-6xl mb-4">{item.icon}</div>
+              {/* Preview khusus untuk avatar */}
+              {item.subCategory === 'avatar' ? (
+                <div className="mb-4">
+                  {AVATAR_MAP[item.id]?.type === 'image' ? (
+                    // Preview gambar asset
+                    <div className={`${sizeClasses['xl']} rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden`}>
+                      <img 
+                        src={AVATAR_MAP[item.id].src} 
+                        alt={AVATAR_MAP[item.id].name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    // Preview emoji atau komponen Avatar
+                    <Avatar 
+                      username={profile.username}
+                      avatarId={item.id}
+                      size="xl"
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="text-6xl mb-4">{item.icon}</div>
+              )}
+              
               {/* Preview warna nama jika item warna nama */}
               {item.subCategory === 'warna nama' && item.id === 'wn-01' ? (
                 <h3 className="text-xl font-bold rainbow-text">{item.name}</h3>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from '../ui/Avatar';
 
 // Objek khusus untuk mewakili obrolan dengan AI.
 // Ini memungkinkan kita untuk menanganinya secara unik di komponen induk.
@@ -20,7 +21,12 @@ const FriendList = ({ friends = [], onSelectFriend, selectedFriendId }) => {
             onClick={() => onSelectFriend(aiFriend)}
             className={`flex items-center p-4 cursor-pointer hover:bg-blue-100 ${selectedFriendId === aiFriend.id ? 'bg-blue-200' : ''}`}
           >
-            <div className="text-3xl mr-4">{aiFriend.avatar}</div>
+            <div className="mr-4">
+              <Avatar 
+                username={aiFriend.name}
+                size="lg"
+              />
+            </div>
             <div className="flex-grow">
               <p className="font-semibold text-blue-800">{aiFriend.name}</p>
             </div>
@@ -36,10 +42,13 @@ const FriendList = ({ friends = [], onSelectFriend, selectedFriendId }) => {
               onClick={() => onSelectFriend(friend)}
               className={`flex items-center p-4 cursor-pointer hover:bg-blue-100 ${selectedFriendId === friend.id ? 'bg-blue-200' : ''}`}
             >
-              <div className="relative">
-                <div className="text-3xl mr-4">{friend.avatar}</div>
+              <div className="relative mr-4">
+                <Avatar 
+                  username={friend.name}
+                  size="lg"
+                />
                 {/* Indikator Status Online */}
-                <span className={`absolute bottom-0 right-3 block h-3 w-3 rounded-full ${friend.isOnline ? 'bg-green-500' : 'bg-gray-400'} ring-2 ring-white`}></span>
+                <span className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full ${friend.isOnline ? 'bg-green-500' : 'bg-gray-400'} ring-2 ring-white`}></span>
               </div>
               <div className="flex-grow">
                 <p className="font-semibold text-blue-800">{friend.name}</p>

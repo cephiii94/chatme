@@ -8,23 +8,23 @@ const Modal = ({ isOpen, onClose, title, children, hideHeader = false }) => {
 
   return ReactDOM.createPortal(
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 animate-fadeIn"
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-lg bg-white rounded-lg shadow-xl"
+        className="relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all duration-300 ease-out animate-scaleIn"
         onClick={e => e.stopPropagation()}
       >
         {/* --- PERUBAHAN DI SINI --- */}
         {/* Header sekarang hanya akan muncul jika hideHeader bernilai false */}
         {!hideHeader && (
-          <div className="flex items-start justify-between p-4 border-b rounded-t">
-            <h3 className="text-xl font-semibold text-gray-900">
+          <div className="flex items-start justify-between p-4 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
               {title}
             </h3>
             <button
               type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-gray-100 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors"
               onClick={onClose}
               aria-label="Close modal"
             >
@@ -34,7 +34,7 @@ const Modal = ({ isOpen, onClose, title, children, hideHeader = false }) => {
         )}
         
         {/* Body Modal */}
-        <div className={!hideHeader ? "p-6" : ""}>
+        <div className={!hideHeader ? "p-6" : "p-6"}>
           {children}
         </div>
       </div>

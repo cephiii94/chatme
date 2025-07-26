@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
 import Notification from '../ui/Notification';
+import Avatar from '../ui/Avatar';
 
 // Data simulasi untuk daftar teman (dengan tambahan properti level)
 const allFriends = [
@@ -57,9 +58,11 @@ const FriendList = () => {
                 >
                   {/* --- PERUBAHAN DI SINI: BINGKAI PROFIL --- */}
                   <div className="relative mr-4">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-2xl ring-2 ring-offset-1 ring-gray-300">
-                      {friend.avatar}
-                    </div>
+                    <Avatar 
+                      username={friend.name}
+                      size="lg"
+                      className="bg-gray-200 ring-gray-300"
+                    />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">{friend.name}</p>
@@ -98,8 +101,12 @@ const FriendList = () => {
           <div>
             <div className="text-center">
               {/* --- PERUBAHAN DI SINI: BINGKAI PROFIL DI MODAL --- */}
-              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-5xl ring-4 ring-offset-2 ring-blue-400 mx-auto mb-4">
-                {selectedFriend.avatar}
+              <div className="mx-auto mb-4">
+                <Avatar 
+                  username={selectedFriend.name}
+                  size="2xl"
+                  className="bg-gray-200 ring-blue-400"
+                />
               </div>
               <h2 className="text-2xl font-bold">{selectedFriend.name}</h2>
               {/* --- PERUBAHAN DI SINI: TAMPILKAN LEVEL --- */}

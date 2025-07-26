@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext.jsx';
-import { useAppearance, WARNA_NAMA_MAP } from '../context/AppearanceContext.jsx';
+import { useAppearance, WARNA_NAMA_MAP, AVATAR_MAP } from '../context/AppearanceContext.jsx';
 import Notification from '../components/ui/Notification.jsx';
+import Avatar from '../components/ui/Avatar.jsx';
 
 const categories = {
   tampilan: { label: 'Tampilan', sub: ['semua', 'tema', 'avatar', 'border', 'gelembung chat', 'warna nama'] },
@@ -189,7 +190,31 @@ export default function InventoryPage() {
             return (
               <div key={item.id === null ? 'default-theme' : `${item.id}-${index}`} className="relative bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col text-center items-center transform hover:scale-105 transition-transform duration-300">
                 {item.quantity > 1 && (<div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">x{item.quantity}</div>)}
-                <div className="text-6xl mb-4">{item.icon}</div>
+                {/* Preview khusus untuk avatar */}
+                {item.subCategory === 'avatar' ? (
+                  <div className="mb-4">
+                    {AVATAR_MAP[item.id]?.type === 'image' ? (
+                      // Preview gambar asset
+                      <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+                        <img 
+                          src={AVATAR_MAP[item.id].src} 
+                          alt={AVATAR_MAP[item.id].name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      // Preview emoji atau komponen Avatar
+                      <Avatar 
+                        username={profile.username}
+                        avatarId={item.id}
+                        size="xl"
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-6xl mb-4">{item.icon}</div>
+                )}
+                
                 {/* Preview warna nama jika item warna nama */}
                 {item.subCategory === 'warna nama' && item.id === 'wn-01' ? (
                   <h3 className="text-xl font-bold rainbow-text">{item.name}</h3>

@@ -23,6 +23,18 @@ export const WARNA_NAMA_MAP = {
     null: '',     // default
 };
 
+// TAMBAHAN BARU: Mapping avatar berdasarkan id item
+export const AVATAR_MAP = {
+    null: { icon: null, name: 'Standar' }, // akan menggunakan inisial username
+    'ava-01': { icon: '👨‍🚀', name: 'Astronot', type: 'emoji' },
+    'ava-02': { icon: '🐱', name: 'Kucing', type: 'emoji' },
+    'ava-03': { src: '/avatars/avatar.png', name: 'Avatar Kustom', type: 'image' },
+    // Contoh untuk avatar dengan gambar asset:
+    // 'ava-04': { src: '/avatars/cat.png', name: 'Kucing Lucu', type: 'image' },
+    // 'ava-05': { src: '/avatars/dog.gif', name: 'Anjing Bergerak', type: 'image' },
+    // Tambahkan avatar lain di sini sesuai dengan item di shop
+};
+
 const defaultAppearance = {
     tema: null,
     'warna nama': null,

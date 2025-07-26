@@ -5,6 +5,7 @@ import { useChat } from '../../context/ChatContext.jsx';
 import { useAppearance, WARNA_NAMA_MAP } from '../../context/AppearanceContext.jsx';
 import Modal from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
+import Avatar from '../ui/Avatar.jsx';
 
 const navItems = [
   { href: "/chat", label: "Chat", icon: '💬' },
@@ -69,9 +70,11 @@ const Sidebar = () => {
                         className="flex items-center cursor-pointer"
                         onClick={() => setIsProfileModalOpen(true)}
                     >
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-300 flex-shrink-0 ring-2 ring-offset-1 ring-blue-200 dark:ring-blue-500">
-                            {profile.username.charAt(0).toUpperCase()}
-                        </div>
+                        <Avatar 
+                            username={profile.username}
+                            avatarId={activeItems.avatar}
+                            size="md"
+                        />
                         {isExpanded && (
                             <div className="ml-3 overflow-hidden">
                                 {activeItems['warna nama'] === 'wn-01' ? (
@@ -88,9 +91,14 @@ const Sidebar = () => {
 
             {/* --- KONTEN MODAL YANG DIPERBAIKI --- */}
             <Modal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} title="Profil Pengguna">
-                <div className="text-center">
-                    <div className="w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-300 text-4xl mx-auto mb-4 ring-4 ring-offset-2 ring-blue-400 dark:ring-blue-600">
-                        {profile.username.charAt(0).toUpperCase()}
+                <div className="text-center w-full">
+                    <div className="flex justify-center items-center mb-6 w-full min-h-[6rem]">
+                        <Avatar 
+                            username={profile.username}
+                            avatarId={activeItems.avatar}
+                            size="2xl"
+                            showRing={true}
+                        />
                     </div>
                     <h2 className={activeItems['warna nama'] === 'wn-01' ? "text-2xl font-bold rainbow-text" : "text-2xl font-bold dark:text-gray-100"} style={activeItems['warna nama'] === 'wn-01' ? {} : (warnaNamaAktif ? { color: warnaNamaAktif } : {})}>{profile.username}</h2>
                     <p className="text-sm font-bold text-blue-500 dark:text-blue-400 mb-2">Level {profile.level || 1}</p>

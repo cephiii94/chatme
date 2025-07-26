@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Avatar from '../ui/Avatar';
 import MessageInput from './MessageInput.jsx';
 import Button from '../ui/Button.jsx';
 
@@ -90,7 +91,12 @@ const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile, onOpenIn
   return (
     <div className="flex flex-col h-full bg-gray-50">
       <header className="flex items-center p-4 bg-white border-b border-gray-200 shadow-sm">
-        <div className="text-3xl mr-4">{friend.avatar}</div>
+        <div className="mr-4">
+          <Avatar 
+            username={friend.name}
+            size="lg"
+          />
+        </div>
         <h2 className="text-xl font-bold text-gray-800">{friend.name}</h2>
       </header>
 
