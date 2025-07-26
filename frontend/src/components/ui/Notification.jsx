@@ -54,8 +54,8 @@ const Notification = ({ notification, onClear }) => {
   };
 
   return (
-    <div 
-      className={`fixed bottom-5 right-5 z-50 flex items-center p-4 rounded-lg shadow-xl text-white transition-all duration-300 ${typeClasses[notification.type] || 'bg-gray-500'} ${visible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}
+    <div
+      className={`fixed top-5 right-5 z-50 flex items-center p-4 rounded-lg shadow-xl text-white transition-all duration-300 ${typeClasses[notification.type] || 'bg-gray-500'} ${visible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}
     >
       <div className="flex-shrink-0">
         {icon[notification.type] || icon.info}
