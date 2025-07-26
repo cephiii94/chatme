@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ChatList from '../components/chat/ChatList.jsx';
 import ChatWindow from '../components/chat/ChatWindow.jsx';
 import InventoryModal from '../components/chat/InventoryModal.jsx';
-import Notification from '../components/ui/notification.jsx';
+import Notification from '../components/ui/Notification.jsx';
 import { useUser } from '../context/UserContext.jsx';
 import { useChat } from '../context/ChatContext.jsx';
 
