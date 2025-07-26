@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext.jsx';
 import { useAppearance, WARNA_NAMA_MAP } from '../context/AppearanceContext.jsx';
-import Notification from '../components/ui/notification.jsx';
+import Notification from '../components/ui/Notification.jsx';
 
 const categories = {
   tampilan: { label: 'Tampilan', sub: ['semua', 'tema', 'avatar', 'border', 'gelembung chat', 'warna nama'] },

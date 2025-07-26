@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useUser } from '../context/UserContext.jsx';
 import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
-import Notification from '../components/ui/notification.jsx';
+import Notification from '../components/ui/Notification.jsx';
 import { WARNA_NAMA_MAP } from '../context/AppearanceContext.jsx';
 
 // Daftar item yang dijual di toko, termasuk item tema baru

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
-import Notification from '../components/ui/notification.jsx'; // 1. Impor Notification
+import Notification from '../components/ui/Notification.jsx'; // 1. Impor Notification
 
 export default function LoginPage() {
   const { login, register } = useAuth(); 
