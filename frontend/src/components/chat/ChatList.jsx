@@ -1,11 +1,20 @@
 import React from 'react';
 import Avatar from '../ui/Avatar';
+import UserProfilePreview from '../ui/UserProfilePreview';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { useUser } from '../../context/UserContext.jsx';
 
 // Objek khusus untuk mewakili obrolan dengan AI.
 // Ini memungkinkan kita untuk menanganinya secara unik di komponen induk.
 const aiFriend = { id: 'ai', name: 'PuterAI', avatar: '🤖', lastMessage: 'Tanyakan apa saja kepada saya!', isOnline: true };
 
 const FriendList = ({ friends = [], onSelectFriend, selectedFriendId }) => {
+  const { user: authUser } = useAuth();
+  const { profile, resetUserData } = useUser();
+  const { logout } = useAuth();
+
+  // Use current user's profile for all previews
+  const currentUserProfile = profile || authUser;
   return (
     <div className="bg-blue-50 border-r border-blue-200 flex flex-col h-full">
       {/* Header komponen */}
@@ -22,10 +31,19 @@ const FriendList = ({ friends = [], onSelectFriend, selectedFriendId }) => {
             className={`flex items-center p-4 cursor-pointer hover:bg-blue-100 ${selectedFriendId === aiFriend.id ? 'bg-blue-200' : ''}`}
           >
             <div className="mr-4">
-              <Avatar 
-                username={aiFriend.name}
-                size="lg"
-              />
+              <UserProfilePreview
+                user={aiFriend}
+                showLevel={true}
+                showCoins={false}
+                showEmail={false}
+                showActions={false}
+                showUserActions={false}
+              >
+                <Avatar
+                  username={aiFriend.name}
+                  size="lg"
+                />
+              </UserProfilePreview>
             </div>
             <div className="flex-grow">
               <p className="font-semibold text-blue-800">{aiFriend.name}</p>
@@ -43,10 +61,20 @@ const FriendList = ({ friends = [], onSelectFriend, selectedFriendId }) => {
               className={`flex items-center p-4 cursor-pointer hover:bg-blue-100 ${selectedFriendId === friend.id ? 'bg-blue-200' : ''}`}
             >
               <div className="relative mr-4">
-                <Avatar 
-                  username={friend.name}
-                  size="lg"
-                />
+                <UserProfilePreview
+                  user={friend}
+                  showLevel={true}
+                  showCoins={false}
+                  showEmail={false}
+                  showActions={true}
+                  showUserActions={false}
+                  onStartChat={(selectedFriend) => onSelectFriend(selectedFriend)}
+                >
+                  <Avatar
+                    username={friend.name}
+                    size="lg"
+                  />
+                </UserProfilePreview>
                 {/* Indikator Status Online */}
                 <span className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full ${friend.isOnline ? 'bg-green-500' : 'bg-gray-400'} ring-2 ring-white`}></span>
               </div>

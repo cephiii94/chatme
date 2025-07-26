@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Button from '../ui/Button';
-import Modal from '../ui/Modal';
 import Notification from '../ui/Notification';
 import Avatar from '../ui/Avatar';
+import UserProfilePreview from '../ui/UserProfilePreview';
 
 // Data simulasi untuk daftar teman (dengan tambahan properti level)
 const allFriends = [
@@ -14,15 +14,7 @@ const allFriends = [
 ];
 
 const FriendList = () => {
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [selectedFriend, setSelectedFriend] = useState(null);
   const [notification, setNotification] = useState(null);
-
-  // Fungsi untuk menampilkan profil di modal
-  const handleViewProfile = (friend) => {
-    setSelectedFriend(friend);
-    setIsProfileModalOpen(true);
-  };
     
   // Fungsi yang akan dipanggil saat ikon chat diklik
   const handleStartChat = (friend) => {
@@ -52,13 +44,20 @@ const FriendList = () => {
                 className={`flex items-center justify-between p-4 ${index < allFriends.length - 1 ? 'border-b border-gray-100' : ''}`}
               >
                 {/* Info Teman (Bisa Diklik) */}
-                <div 
-                  className="flex items-center cursor-pointer"
-                  onClick={() => handleViewProfile(friend)}
+                <UserProfilePreview
+                  user={{
+                    name: friend.name,
+                    level: friend.level,
+                    isOnline: friend.isOnline,
+                    avatarId: friend.avatarId
+                  }}
+                  showLevel={true}
+                  showActions={true}
+                  onStartChat={handleStartChat}
+                  className="flex items-center"
                 >
-                  {/* --- PERUBAHAN DI SINI: BINGKAI PROFIL --- */}
                   <div className="relative mr-4">
-                    <Avatar 
+                    <Avatar
                       username={friend.name}
                       size="lg"
                       className="bg-gray-200 ring-gray-300"
@@ -73,7 +72,7 @@ const FriendList = () => {
                       </span>
                     </div>
                   </div>
-                </div>
+                </UserProfilePreview>
 
                 {/* Tombol untuk memulai chat */}
                 <button 
@@ -90,40 +89,6 @@ const FriendList = () => {
           </ul>
         </div>
       </div>
-
-      {/* Modal untuk Profil Teman */}
-      <Modal 
-        isOpen={isProfileModalOpen} 
-        onClose={() => setIsProfileModalOpen(false)} 
-        title="Profil Teman"
-      >
-        {selectedFriend && (
-          <div>
-            <div className="text-center">
-              {/* --- PERUBAHAN DI SINI: BINGKAI PROFIL DI MODAL --- */}
-              <div className="mx-auto mb-4">
-                <Avatar 
-                  username={selectedFriend.name}
-                  size="2xl"
-                  className="bg-gray-200 ring-blue-400"
-                />
-              </div>
-              <h2 className="text-2xl font-bold">{selectedFriend.name}</h2>
-              {/* --- PERUBAHAN DI SINI: TAMPILKAN LEVEL --- */}
-              <p className="text-sm font-bold text-blue-500 mb-2">Level {selectedFriend.level}</p>
-              <div className="flex items-center justify-center mt-2">
-                <span className={`h-3 w-3 rounded-full mr-2 ${selectedFriend.isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                <span className={`text-md ${selectedFriend.isOnline ? 'text-green-600' : 'text-gray-500'}`}>
-                  {selectedFriend.isOnline ? 'Online' : 'Offline'}
-                </span>
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <Button variant="secondary" onClick={() => setIsProfileModalOpen(false)}>Tutup</Button>
-            </div>
-          </div>
-        )}
-      </Modal>
       
       {/* Komponen Notifikasi */}
       <Notification notification={notification} onClear={() => setNotification(null)} />

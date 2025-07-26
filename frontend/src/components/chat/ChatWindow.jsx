@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '../ui/Avatar';
+import UserProfilePreview from '../ui/UserProfilePreview.jsx';
 import MessageInput from './MessageInput.jsx';
 import Button from '../ui/Button.jsx';
 
@@ -91,13 +92,33 @@ const ChatWindow = ({ friend, messages = [], onSendMessage, onSendFile, onOpenIn
   return (
     <div className="flex flex-col h-full bg-gray-50">
       <header className="flex items-center p-4 bg-white border-b border-gray-200 shadow-sm">
-        <div className="mr-4">
-          <Avatar 
+        <UserProfilePreview
+          user={{
+            name: friend.name,
+            level: friend.level || 1,
+            isOnline: friend.isOnline,
+            avatarId: friend.avatarId
+          }}
+          showLevel={true}
+          showActions={false}
+          className="mr-4"
+        >
+          <Avatar
             username={friend.name}
             size="lg"
           />
+        </UserProfilePreview>
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">{friend.name}</h2>
+          {friend.isOnline !== undefined && (
+            <div className="flex items-center mt-1">
+              <span className={`h-2 w-2 rounded-full mr-1.5 ${friend.isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+              <span className={`text-xs ${friend.isOnline ? 'text-green-600' : 'text-gray-500'}`}>
+                {friend.isOnline ? 'Online' : 'Offline'}
+              </span>
+            </div>
+          )}
         </div>
-        <h2 className="text-xl font-bold text-gray-800">{friend.name}</h2>
       </header>
 
       <main className="flex-grow p-6 overflow-y-auto">

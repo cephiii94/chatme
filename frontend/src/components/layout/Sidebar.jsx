@@ -6,6 +6,7 @@ import { useAppearance, WARNA_NAMA_MAP } from '../../context/AppearanceContext.j
 import Modal from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 import Avatar from '../ui/Avatar.jsx';
+import UserProfilePreview from '../ui/UserProfilePreview.jsx';
 
 const navItems = [
   { href: "/chat", label: "Chat", icon: '💬' },
@@ -17,7 +18,6 @@ const navItems = [
 
 const Sidebar = () => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const { logout } = useAuth();
     const { profile, resetUserData } = useUser();
     const { resetChatData } = useChat();
@@ -29,15 +29,10 @@ const Sidebar = () => {
     }
 
     const handleResetClick = () => {
-        const isConfirmed = window.confirm(
-            "Apakah Anda yakin ingin mereset data trial? Semua data akan hilang."
-        );
-        if (isConfirmed) {
-            resetUserData();
-            resetChatData();
-            resetAppearanceData();
-            window.location.reload();
-        }
+        resetUserData();
+        resetChatData();
+        resetAppearanceData();
+        window.location.reload();
     };
 
     return (
@@ -66,11 +61,25 @@ const Sidebar = () => {
                     </ul>
                 </nav>
                 <div className="p-4 border-t flex-shrink-0 dark:border-gray-700">
-                    <div 
-                        className="flex items-center cursor-pointer"
-                        onClick={() => setIsProfileModalOpen(true)}
+                    <UserProfilePreview
+                        user={{
+                            username: profile.username,
+                            email: profile.email,
+                            level: profile.level,
+                            coins: profile.coins,
+                            avatarId: activeItems.avatar,
+                            warnaName: activeItems['warna nama']
+                        }}
+                        showLevel={true}
+                        showCoins={true}
+                        showEmail={true}
+                        showActions={false}
+                        showUserActions={true}
+                        onLogout={logout}
+                        onResetData={handleResetClick}
+                        className="flex items-center w-full"
                     >
-                        <Avatar 
+                        <Avatar
                             username={profile.username}
                             avatarId={activeItems.avatar}
                             size="md"
@@ -85,45 +94,9 @@ const Sidebar = () => {
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Level {profile.level || 1}</p>
                             </div>
                         )}
-                    </div>
+                    </UserProfilePreview>
                 </div>
             </aside>
-
-            {/* --- KONTEN MODAL YANG DIPERBAIKI --- */}
-            <Modal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} title="Profil Pengguna">
-                <div className="text-center w-full">
-                    <div className="flex justify-center items-center mb-6 w-full min-h-[6rem]">
-                        <Avatar 
-                            username={profile.username}
-                            avatarId={activeItems.avatar}
-                            size="2xl"
-                            showRing={true}
-                        />
-                    </div>
-                    <h2 className={activeItems['warna nama'] === 'wn-01' ? "text-2xl font-bold rainbow-text" : "text-2xl font-bold dark:text-gray-100"} style={activeItems['warna nama'] === 'wn-01' ? {} : (warnaNamaAktif ? { color: warnaNamaAktif } : {})}>{profile.username}</h2>
-                    <p className="text-sm font-bold text-blue-500 dark:text-blue-400 mb-2">Level {profile.level || 1}</p>
-                    <p className="text-gray-600 dark:text-gray-400">{profile.email}</p>
-                    <div className="mt-4 bg-yellow-100 text-yellow-800 text-lg font-semibold py-2 px-4 rounded-full inline-block">
-                        {profile.coins} Koin 💰
-                    </div>
-                </div>
-
-                <div className="mt-6 pt-4 border-t dark:border-gray-600">
-                    <p className="text-xs text-center text-gray-500 dark:text-gray-400 mb-2">Untuk keperluan trial & development</p>
-                    <Button 
-                        variant="warning" 
-                        onClick={handleResetClick}
-                        className="w-full !bg-yellow-500 hover:!bg-yellow-600 text-white"
-                    >
-                        Reset Data Trial
-                    </Button>
-                </div>
-
-                <div className="mt-6 flex justify-end space-x-4">
-                    <Button variant="danger" onClick={() => { setIsProfileModalOpen(false); logout(); }}>Keluar</Button>
-                    <Button variant="secondary" onClick={() => setIsProfileModalOpen(false)}>Tutup</Button>
-                </div>
-            </Modal>
         </>
     );
 };
