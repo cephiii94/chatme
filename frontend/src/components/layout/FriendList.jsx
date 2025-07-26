@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
-import Notification from '../ui/notification';
+import Notification from '../ui/Notification';
 
 // Data simulasi untuk daftar teman (dengan tambahan properti level)
 const allFriends = [
