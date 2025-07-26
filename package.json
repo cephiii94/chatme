@@ -1,0 +1,24 @@
+{
+  "name": "chatsyok",
+  "version": "1.0.0",
+  "description": "ChatsYok\r Selamat datang di ChatsYok, sebuah aplikasi web chat modern yang dirancang oleh Cecep Hardiansyah. Aplikasi ini memungkinkan pengguna untuk berkomunikasi secara peer-to-peer (P2P), berinteraksi dengan asisten AI, dan mengumpulkan item serta pencapaian.",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^17.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cephiii94/chatme.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cephiii94/chatme/issues"
+  },
+  "homepage": "https://github.com/cephiii94/chatme#readme"
+}
