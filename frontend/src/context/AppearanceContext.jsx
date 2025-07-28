@@ -17,7 +17,7 @@ const THEME_CONFIG = {
 
 // Mapping warna nama berdasarkan id item
 export const WARNA_NAMA_MAP = {
-    'wn-01': 'rainbow', // pelangi, handle khusus di komponen
+    'wn-01': { type: 'class', value: 'rainbow-text' }, // pelangi, handle khusus di komponen
     'wn-02': '#2563eb', // biru
     'wn-03': '#22c55e', // hijau
     'wn-04': { type: 'color', value: '#8b5cf6' },      // Ungu menggunakan style
