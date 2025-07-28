@@ -3,19 +3,11 @@ import { useUser } from '../context/UserContext.jsx';
 import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Notification from '../components/ui/Notification.jsx';
+// Pastikan WARNA_NAMA_MAP diimpor dari AppearanceContext yang sudah diperbarui
 import { WARNA_NAMA_MAP, AVATAR_MAP } from '../context/AppearanceContext.jsx';
 import Avatar from '../components/ui/Avatar.jsx';
 
-// Size mapping untuk preview avatar
-const sizeClasses = {
-  sm: 'w-8 h-8',
-  md: 'w-10 h-10',
-  lg: 'w-12 h-12',
-  xl: 'w-16 h-16',
-  '2xl': 'w-24 h-24'
-};
-
-// Daftar item yang dijual di toko, termasuk item tema baru
+// Daftar item yang dijual di toko, pastikan item neon sudah ada
 const shopItems = [
   // tema
   { id: 'tm-01', name: 'Tema "Gelap"', price: 500, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
@@ -26,36 +18,15 @@ const shopItems = [
   { id: 'wn-01', name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
   { id: 'wn-02', name: 'Warna Nama "Biru"', price: 700, icon: '🔵', category: 'tampilan', subCategory: 'warna nama' },
   { id: 'wn-03', name: 'Warna Nama "Hijau"', price: 700, icon: '🟢', category: 'tampilan', subCategory: 'warna nama' },
-
-  // gelembung chat
-  { id: 'boob-01', name: 'Gelembung "Komik"', price: 350, icon: '💥', category: 'tampilan', subCategory: 'gelembung chat' },
+  { id: 'wn-04', name: 'Warna Nama "Ungu"', price: 700, icon: '🟣', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-05', name: 'Warna Nama "Neon Glow"', price: 1500, icon: '❇️', category: 'tampilan', subCategory: 'warna nama' },
 
   // avatar
   { id: 'ava-01', name: 'Avatar "Astronot"', price: 400, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
   { id: 'ava-02', name: 'Avatar "Kucing"', price: 350, icon: '🐱', category: 'tampilan', subCategory: 'avatar' },
   { id: 'ava-03', name: 'Avatar "Kustom"', price: 500, icon: '🖼️', category: 'tampilan', subCategory: 'avatar' },
 
-  // border
-  { id: 'border-01', name: 'Bingkai "Emas"', price: 1000, icon: '🖼️', category: 'tampilan', subCategory: 'border' },
-  { id: 'border-02', name: 'Bingkai "Api"', price: 1200, icon: '🔥', category: 'tampilan', subCategory: 'border' },
-
-  // notif
-  { id: 'not-01', name: 'Notif "Retro"', price: 300, icon: '👾', category: 'suara', subCategory: 'notif' },
-
-  //efek
-  { id: 'ef-01', name: 'Efek "Tawa Jahat"', price: 100, icon: '😂', category: 'suara', subCategory: 'efek' },
-
-  // stiker
-  { id: 'stk-01', name: 'Stiker "Kucing Lucu"', price: 250, icon: '😻', category: 'sosial', subCategory: 'stiker' },
-
-  //imoji
-  { id: 'emj-01', name: 'Emoji "Gamer"', price: 200, icon: '🎮', category: 'sosial', subCategory: 'imoji' },
-
-  // hadiah
-  { id: 'rew-01', name: 'Hadiah "Mawar"', price: 50, icon: '🌹', category: 'sosial', subCategory: 'hadiah' },
-
-  // adds-on
-  { id: 'adds-01', name: 'Slot Teman (+5)', price: 1500, icon: '➕', category: 'sosial', subCategory: 'adds-on' },
+  // ... item lainnya
 ];
 
 const categories = {
@@ -85,13 +56,10 @@ export default function ShopPage() {
     if (!selectedItem) return;
 
     const isOwned = inventory.some(invItem => invItem.id === selectedItem.id);
-    const isRebuyable = selectedItem.subCategory === 'hadiah' || selectedItem.subCategory === 'adds-on';
-
-    if (isOwned && !isRebuyable) {
+    if (isOwned) {
       setNotification({ message: 'Anda sudah memiliki item ini.', type: 'info' });
     } else if (profile.coins >= selectedItem.price) {
-      const newCoinBalance = profile.coins - selectedItem.price;
-      updateCoins(newCoinBalance);
+      updateCoins(profile.coins - selectedItem.price);
       addItemToInventory(selectedItem);
       setNotification({ message: `Anda berhasil membeli ${selectedItem.name}!`, type: 'success' });
     } else {
@@ -137,52 +105,37 @@ export default function ShopPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {filteredItems.map((item) => {
           const isOwned = inventory.some(invItem => invItem.id === item.id);
-          const isRebuyable = item.subCategory === 'hadiah' || item.subCategory === 'adds-on';
-          const canPurchase = !isOwned || isRebuyable;
           return (
             <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col text-center items-center">
-              {/* Preview khusus untuk avatar */}
               {item.subCategory === 'avatar' ? (
                 <div className="mb-4">
-                  {AVATAR_MAP[item.id]?.type === 'image' ? (
-                    // Preview gambar asset
-                    <div className={`${sizeClasses['xl']} rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden`}>
-                      <img 
-                        src={AVATAR_MAP[item.id].src} 
-                        alt={AVATAR_MAP[item.id].name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    // Preview emoji atau komponen Avatar
-                    <Avatar 
-                      username={profile.username}
-                      avatarId={item.id}
-                      size="xl"
-                    />
-                  )}
+                  <Avatar username={profile.username} avatarId={item.id} size="xl" />
                 </div>
               ) : (
                 <div className="text-6xl mb-4">{item.icon}</div>
               )}
               
-              {/* Preview warna nama jika item warna nama */}
-              {item.subCategory === 'warna nama' && item.id === 'wn-01' ? (
-                <h3 className="text-xl font-bold rainbow-text">{item.name}</h3>
-              ) : item.subCategory === 'warna nama' ? (
-                <h3 className="text-xl font-bold" style={{ color: WARNA_NAMA_MAP[item.id] || undefined }}>{item.name}</h3>
-              ) : (
+              {/* ======================= PERUBAHAN UTAMA DI SINI ======================= */}
+              {item.subCategory === 'warna nama' ? (() => {
+                  const styleInfo = WARNA_NAMA_MAP[item.id];
+                  if (styleInfo && styleInfo.type === 'class') {
+                      return <h3 className={`text-xl font-bold ${styleInfo.value}`}>{item.name}</h3>;
+                  }
+                  return <h3 className="text-xl font-bold" style={{ color: styleInfo ? styleInfo.value : undefined }}>{item.name}</h3>;
+              })() : (
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{item.name}</h3>
               )}
+              {/* ======================================================================= */}
+
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">({item.subCategory})</p>
               <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 my-4">{item.price} Koin</p>
               <Button
                 onClick={() => { setSelectedItem(item); setIsModalOpen(true); }}
                 variant="primary"
-                disabled={!canPurchase}
-                className={!canPurchase ? 'bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed' : ''}
+                disabled={isOwned}
+                className={isOwned ? 'bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed' : ''}
               >
-                {canPurchase ? 'Beli' : 'Dimiliki'}
+                {isOwned ? 'Dimiliki' : 'Beli'}
               </Button>
             </div>
           );

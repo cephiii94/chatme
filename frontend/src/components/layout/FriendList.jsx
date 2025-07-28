@@ -11,6 +11,10 @@ const allFriends = [
     { id: 4, name: 'Varren', avatar: '🍼', isOnline: true, level: 1 },
     { id: 5, name: 'John Doe', avatar: '👨‍🚀', isOnline: false, level: 25 },
     { id: 6, name: 'Jane Smith', avatar: '🎨', isOnline: true, level: 18 },
+    // Menambahkan teman baru: Arman, Bycycle, dan Crombo
+    { id: 7, name: 'Arman', avatar: '👨‍🎤', isOnline: true, level: 10 },
+    { id: 8, name: 'Bycycle', avatar: '🚴‍♂️', isOnline: false, level: 7 },
+    { id: 9, name: 'Crombo', avatar: '🤖', isOnline: true, level: 30 },
 ];
 
 const FriendList = () => {
@@ -49,7 +53,7 @@ const FriendList = () => {
                     name: friend.name,
                     level: friend.level,
                     isOnline: friend.isOnline,
-                    avatarId: friend.avatarId
+                    avatarId: friend.avatarId // Pastikan properti avatarId diteruskan jika ada
                   }}
                   showLevel={true}
                   showActions={true}

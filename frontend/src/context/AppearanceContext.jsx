@@ -20,8 +20,14 @@ export const WARNA_NAMA_MAP = {
     'wn-01': 'rainbow', // pelangi, handle khusus di komponen
     'wn-02': '#2563eb', // biru
     'wn-03': '#22c55e', // hijau
-    null: '',     // default
+    'wn-04': { type: 'color', value: '#8b5cf6' },      // Ungu menggunakan style
+    
+    // TAMBAHAN BARU UNTUK NEON
+    'wn-05': { type: 'class', value: 'neon-text' },    // Neon menggunakan className
+
+    null: { type: 'color', value: '' },                // Default
 };
+
 
 // TAMBAHAN BARU: Mapping avatar berdasarkan id item
 export const AVATAR_MAP = {

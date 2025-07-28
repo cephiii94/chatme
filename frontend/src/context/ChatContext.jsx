@@ -34,6 +34,44 @@ const initialMessagesData = {
             item: { id: 18, name: 'Hadiah "Kopi"', price: 25, icon: '☕', category: 'sosial', subCategory: 'hadiah' } 
         }
     ],
+    // --- Menambahkan chat untuk Arman (ID 7) ---
+    7: [
+        { id: 701, sender: 'other', text: 'Hai, apa kabar?', type: 'text' },
+        { id: 702, sender: 'me', text: 'Baik, kamu?', type: 'text' },
+        { 
+            id: 703, 
+            sender: 'other', 
+            type: 'hadiah', 
+            claimed: false,
+            item: { id: 7001, name: 'Hadiah "Buku"', price: 100, icon: '📚', category: 'pendidikan', subCategory: 'hadiah' } 
+        },
+        { id: 704, sender: 'other', text: 'Semoga suka hadiahnya!', type: 'text' },
+    ],
+    // --- Menambahkan chat untuk Bycycle (ID 8) ---
+    8: [
+        { id: 801, sender: 'other', text: 'Sudah siap untuk bersepeda besok?', type: 'text' },
+        { id: 802, sender: 'me', text: 'Tentu! Aku sudah siap.', type: 'text' },
+        { 
+            id: 803, 
+            sender: 'other', 
+            type: 'hadiah', 
+            claimed: false,
+            item: { id: 8001, name: 'Hadiah "Botol Minum"', price: 30, icon: '🥤', category: 'olahraga', subCategory: 'hadiah' } 
+        },
+    ],
+    // --- Menambahkan chat untuk Crombo (ID 9) ---
+    9: [
+        { id: 901, sender: 'other', text: 'PuterAI telah melakukan pembaruan!', type: 'text' },
+        { id: 902, sender: 'me', text: 'Wah, keren!', type: 'text' },
+        { 
+            id: 903, 
+            sender: 'other', 
+            type: 'hadiah', 
+            claimed: false,
+            item: { id: 9001, name: 'Hadiah "Chip Komputer"', price: 200, icon: '💻', category: 'teknologi', subCategory: 'hadiah' } 
+        },
+        { id: 904, sender: 'other', text: 'Ini hadiah dari PuterAI untukmu.', type: 'text' },
+    ],
 };
 
 // 3. Buat Provider Component

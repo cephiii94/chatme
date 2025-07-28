@@ -6,9 +6,14 @@ import Notification from '../components/ui/Notification.jsx';
 import { useUser } from '../context/UserContext.jsx';
 import { useChat } from '../context/ChatContext.jsx';
 
+// Data simulasi untuk daftar teman, harus sesuai dengan FriendList.jsx
 const friendsData = [
   { id: 2, name: 'Erlin Karlinda', avatar: '👩‍💻', lastMessage: 'Jangan lupa beli susu ya.', unread: 2, isOnline: true },
   { id: 3, name: 'Vanno', avatar: '👨‍🚀', lastMessage: 'Ayah, main yuk!', unread: 0, isOnline: false },
+  // Menambahkan teman baru: Arman, Bycycle, dan Crombo
+  { id: 7, name: 'Arman', avatar: '👨‍🎤', lastMessage: 'Semoga suka hadiahnya!', unread: 0, isOnline: true },
+  { id: 8, name: 'Bycycle', avatar: '🚴‍♂️', lastMessage: 'Tentu! Aku sudah siap.', unread: 0, isOnline: false },
+  { id: 9, name: 'Crombo', avatar: '🤖', lastMessage: 'Ini hadiah dari PuterAI untukmu.', unread: 0, isOnline: true },
 ];
 
 export default function ChatPage() {
@@ -29,13 +34,13 @@ export default function ChatPage() {
       sendMessage(selectedFriend.id, newMessage);
   };
 
-  // --- PERUBAHAN 1: Sertakan seluruh objek 'item' saat mengirim ---
+  // Sertakan seluruh objek 'item' saat mengirim
   const handleSendItem = (item) => {
     if (!selectedFriend) return;
     const newItemMessage = {
         id: Date.now(),
         sender: 'me',
-        type: item.subCategory,
+        type: item.subCategory, // Menggunakan subCategory sebagai tipe pesan
         item: item // Sertakan seluruh objek item di sini
     };
     sendMessage(selectedFriend.id, newItemMessage);
@@ -47,7 +52,7 @@ export default function ChatPage() {
     setIsInventoryOpen(false);
   };
 
-  // --- PERUBAHAN 2: Panggil addItemToInventory saat menerima hadiah ---
+  // Panggil addItemToInventory saat menerima hadiah
   const handleAcceptGift = (messageId) => {
     if (!selectedFriend) return;
     

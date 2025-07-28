@@ -12,7 +12,7 @@ const navItems = [
   { href: "/chat", label: "Chat", icon: '💬' },
   { href: "/friends", label: "Teman", icon: '👥' },
   { href: "/shop", label: "Toko", icon: '🛍️' },
-  { href: "/inventory", label: "Inventaris", icon: '🎁' },
+  { href: "/inventory", label: "Inventaris", icon: '🎒' },
   { href: "/achievements", label: "Pencapaian", icon: '🏆' },
 ];
 
@@ -22,7 +22,6 @@ const Sidebar = () => {
     const { profile, resetUserData } = useUser();
     const { resetChatData } = useChat();
     const { resetAppearanceData, activeItems } = useAppearance();
-    const warnaNamaAktif = WARNA_NAMA_MAP[activeItems && activeItems['warna nama']] || '';
 
     if (!profile) {
         return <div className="w-20 h-screen bg-white shadow-lg dark:bg-gray-900"></div>;
@@ -33,6 +32,17 @@ const Sidebar = () => {
         resetChatData();
         resetAppearanceData();
         window.location.reload();
+    };
+
+    // Fungsi bantuan untuk merender nama pengguna dengan gaya yang benar
+    const renderUsername = () => {
+        const styleInfo = WARNA_NAMA_MAP[activeItems['warna nama']] || WARNA_NAMA_MAP[null];
+        
+        if (styleInfo && styleInfo.type === 'class') {
+            return <p className={`text-sm font-semibold truncate ${styleInfo.value}`}>{profile.username}</p>;
+        }
+        
+        return <p className="text-sm font-semibold truncate" style={{ color: styleInfo ? styleInfo.value : undefined }}>{profile.username}</p>;
     };
 
     return (
@@ -86,11 +96,8 @@ const Sidebar = () => {
                         />
                         {isExpanded && (
                             <div className="ml-3 overflow-hidden">
-                                {activeItems['warna nama'] === 'wn-01' ? (
-                                    <p className="text-sm font-semibold truncate rainbow-text">{profile.username}</p>
-                                ) : (
-                                    <p className="text-sm font-semibold truncate" style={warnaNamaAktif ? { color: warnaNamaAktif } : {}}>{profile.username}</p>
-                                )}
+                                {/* Panggil fungsi render di sini */}
+                                {renderUsername()}
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Level {profile.level || 1}</p>
                             </div>
                         )}
