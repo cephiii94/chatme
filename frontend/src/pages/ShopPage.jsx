@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext.jsx';
+import { useAppearance, WARNA_NAMA_MAP, AVATAR_MAP, THEME_CONFIG } from '../context/AppearanceContext.jsx'; // Import useAppearance
 import Button from '../components/ui/Button.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Notification from '../components/ui/Notification.jsx';
-// Pastikan WARNA_NAMA_MAP diimpor dari AppearanceContext yang sudah diperbarui
-import { WARNA_NAMA_MAP, AVATAR_MAP } from '../context/AppearanceContext.jsx';
 import Avatar from '../components/ui/Avatar.jsx';
 
 // Daftar item yang dijual di toko, pastikan item neon sudah ada
@@ -37,6 +36,7 @@ const categories = {
 
 export default function ShopPage() {
   const { profile, inventory, updateCoins, addItemToInventory } = useUser();
+  const { setAppearance } = useAppearance(); // Dapatkan setAppearance dari AppearanceContext
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [notification, setNotification] = useState(null);
@@ -61,6 +61,17 @@ export default function ShopPage() {
     } else if (profile.coins >= selectedItem.price) {
       updateCoins(profile.coins - selectedItem.price);
       addItemToInventory(selectedItem);
+      
+      // PENTING: Tambahkan logika ini untuk menerapkan tema/tampilan setelah pembelian
+      if (selectedItem.subCategory === 'tema' || 
+          selectedItem.subCategory === 'warna nama' || 
+          selectedItem.subCategory === 'avatar' || 
+          selectedItem.subCategory === 'border' || 
+          selectedItem.subCategory === 'gelembung chat'
+      ) {
+        setAppearance(selectedItem.subCategory, selectedItem.id);
+      }
+
       setNotification({ message: `Anda berhasil membeli ${selectedItem.name}!`, type: 'success' });
     } else {
       setNotification({ message: 'Koin Anda tidak cukup.', type: 'error' });

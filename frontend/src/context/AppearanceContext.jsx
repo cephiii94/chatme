@@ -8,7 +8,7 @@ export const useAppearance = () => {
 };
 
 // TAMBAHAN BARU: Konfigurasi tema yang lebih lengkap
-const THEME_CONFIG = {
+export const THEME_CONFIG = {
     null: { name: 'Tema Standar', className: '' },
     'tm-01': { name: 'Tema Gelap', className: 'dark' },
     'tm-02': { name: 'Tema Galaxy', className: 'theme-galaxy' },

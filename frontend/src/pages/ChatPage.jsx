@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// frontend/src/pages/ChatPage.jsx
+import React, { useState, useEffect } from 'react';
 import ChatList from '../components/chat/ChatList.jsx';
 import ChatWindow from '../components/chat/ChatWindow.jsx';
 import InventoryModal from '../components/chat/InventoryModal.jsx';
@@ -23,9 +24,33 @@ export default function ChatPage() {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [notification, setNotification] = useState(null);
+  // State baru untuk mengontrol tampilan di layar kecil
+  const [showChatWindow, setShowChatWindow] = useState(false); 
+
+  // Efek untuk mendeteksi ukuran layar dan mengatur tampilan awal
+  useEffect(() => {
+    const handleResize = () => {
+      // Jika layar lebih besar dari 'md' breakpoint (768px), selalu tampilkan keduanya
+      if (window.innerWidth >= 768) {
+        setShowChatWindow(true); // Di desktop, chat window selalu terlihat
+      } else {
+        // Di mobile, sembunyikan chat window jika tidak ada teman yang dipilih
+        setShowChatWindow(!!selectedFriend);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Panggil saat komponen dimuat
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [selectedFriend]); // Bergantung pada selectedFriend untuk memperbarui tampilan
 
   const handleSelectFriend = (friend) => {
     setSelectedFriend(friend);
+    // Di layar kecil, saat teman dipilih, tampilkan ChatWindow
+    if (window.innerWidth < 768) {
+      setShowChatWindow(true);
+    }
   };
 
   const handleSendMessage = (newMessageText) => {
@@ -77,15 +102,19 @@ export default function ChatPage() {
 
   return (
     <>
-        <div className="flex h-screen w-full overflow-hidden bg-gray-100">
-            <div className="w-1/3 max-w-sm flex-shrink-0 bg-white border-r">
+        <div className="flex h-screen w-full overflow-hidden bg-gray-100 dark:bg-gray-900">
+            {/* ChatList akan ditampilkan penuh di layar kecil jika ChatWindow tidak aktif,
+                dan akan menjadi 1/3 lebar di layar besar */}
+            <div className={`${showChatWindow && window.innerWidth < 768 ? 'hidden' : 'w-full md:w-1/3'} max-w-sm flex-shrink-0 bg-white border-r dark:bg-gray-800 dark:border-gray-700`}>
                 <ChatList 
                     friends={friendsData} 
                     onSelectFriend={handleSelectFriend}
                     selectedFriendId={selectedFriend?.id}
                 />
             </div>
-            <div className="flex-grow">
+            {/* ChatWindow akan ditampilkan penuh di layar kecil jika aktif,
+                dan akan mengisi sisa ruang di layar besar */}
+            <div className={`${!selectedFriend || (window.innerWidth < 768 && !showChatWindow) ? 'hidden' : 'flex-grow'}`}>
                 <ChatWindow 
                     friend={selectedFriend} 
                     messages={messages[selectedFriend?.id] || []}
