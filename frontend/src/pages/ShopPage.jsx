@@ -9,21 +9,21 @@ import Avatar from '../components/ui/Avatar.jsx';
 // Daftar item yang dijual di toko, pastikan item neon sudah ada
 const shopItems = [
   // tema
-  { id: 'tm-01', name: 'Tema "Gelap"', price: 500, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
-  { id: 'tm-02', name: 'Tema "Galaxy"', price: 500, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
-  { id: 'tm-03', name: 'Tema "Soft Blue"', price: 600, icon: '💙', category: 'tampilan', subCategory: 'tema' },
- 
+  { id: 'tm-01', name: 'Tema "Gelap"', price: 50, icon: '🌙', category: 'tampilan', subCategory: 'tema' },
+  { id: 'tm-02', name: 'Tema "Galaxy"', price: 50, icon: '🌌', category: 'tampilan', subCategory: 'tema' },
+  { id: 'tm-03', name: 'Tema "Soft Blue"', price: 60, icon: '💙', category: 'tampilan', subCategory: 'tema' },
+
   // warna nama
-  { id: 'wn-01', name: 'Warna Nama "Pelangi"', price: 750, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
-  { id: 'wn-02', name: 'Warna Nama "Biru"', price: 700, icon: '🔵', category: 'tampilan', subCategory: 'warna nama' },
-  { id: 'wn-03', name: 'Warna Nama "Hijau"', price: 700, icon: '🟢', category: 'tampilan', subCategory: 'warna nama' },
-  { id: 'wn-04', name: 'Warna Nama "Ungu"', price: 700, icon: '🟣', category: 'tampilan', subCategory: 'warna nama' },
-  { id: 'wn-05', name: 'Warna Nama "Neon Glow"', price: 1500, icon: '❇️', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-01', name: 'Warna Nama "Pelangi"', price: 70, icon: '🌈', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-02', name: 'Warna Nama "Biru"', price: 70, icon: '🔵', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-03', name: 'Warna Nama "Hijau"', price: 70, icon: '🟢', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-04', name: 'Warna Nama "Ungu"', price: 70, icon: '🟣', category: 'tampilan', subCategory: 'warna nama' },
+  { id: 'wn-05', name: 'Warna Nama "Neon Glow"', price: 10, icon: '❇️', category: 'tampilan', subCategory: 'warna nama' },
 
   // avatar
-  { id: 'ava-01', name: 'Avatar "Astronot"', price: 400, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
-  { id: 'ava-02', name: 'Avatar "Kucing"', price: 350, icon: '🐱', category: 'tampilan', subCategory: 'avatar' },
-  { id: 'ava-03', name: 'Avatar "Kustom"', price: 500, icon: '🖼️', category: 'tampilan', subCategory: 'avatar' },
+  { id: 'ava-01', name: 'Avatar "Astronot"', price: 40, icon: '👨‍🚀', category: 'tampilan', subCategory: 'avatar' },
+  { id: 'ava-02', name: 'Avatar "Kucing"', price: 30, icon: '🐱', category: 'tampilan', subCategory: 'avatar' },
+  { id: 'ava-03', name: 'Avatar "Kustom"', price: 50, icon: '🖼️', category: 'tampilan', subCategory: 'avatar' },
 
   // ... item lainnya
 ];

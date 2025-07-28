@@ -18,10 +18,10 @@ export const THEME_CONFIG = {
 // Mapping warna nama berdasarkan id item
 export const WARNA_NAMA_MAP = {
     'wn-01': { type: 'class', value: 'rainbow-text' }, // pelangi, handle khusus di komponen
-    'wn-02': '#2563eb', // biru
-    'wn-03': '#22c55e', // hijau
-    'wn-04': { type: 'color', value: '#8b5cf6' },      // Ungu menggunakan style
-    
+    'wn-02': { type: 'color', value: '#2563eb' }, // biru
+    'wn-03': { type: 'color', value: '#22c55e' }, // hijau
+    'wn-04': { type: 'color', value: '#8b5cf6' }, // Ungu menggunakan style
+
     // TAMBAHAN BARU UNTUK NEON
     'wn-05': { type: 'class', value: 'neon-text' },    // Neon menggunakan className
 
