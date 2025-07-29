@@ -20,9 +20,13 @@ export const UserProvider = ({ children }) => {
       const storedProfile = localStorage.getItem(`profile_${userId}`);
       if (storedProfile) {
         userProfile = JSON.parse(storedProfile);
+        // PENTING: Pastikan properti level selalu ada, default ke 1 jika tidak ada
+        if (userProfile.level === undefined || userProfile.level === null) {
+          userProfile.level = 1;
+        }
       } else {
+        // Jika tidak ada storedProfile, inisialisasi dengan level 1
         userProfile = { ...user, coins: 2500, level: 1 };
-        localStorage.setItem(`profile_${userId}`, JSON.stringify(userProfile));
       }
       setProfile(userProfile);
 
@@ -52,13 +56,11 @@ export const UserProvider = ({ children }) => {
     }
   };
   
-  // --- PERUBAHAN DI SINI: Menghapus window.location.reload() ---
   const resetUserData = () => {
     if (user) {
       const userId = user.id;
       localStorage.removeItem(`profile_${userId}`);
       localStorage.removeItem(`inventory_${userId}`);
-      // Perintah reload dipindahkan ke Sidebar.jsx
     }
   };
 

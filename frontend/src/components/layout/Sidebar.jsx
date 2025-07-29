@@ -20,20 +20,16 @@ const navItems = [
   { href: "/achievements", label: "Pencapaian", icon: Award },
 ];
 
-const Sidebar = () => {
+// Menerima prop showMobileNavbar
+const Sidebar = ({ showMobileNavbar }) => {
     const { logout } = useAuth();
     const { profile, resetUserData } = useUser();
     const { resetChatData } = useChat();
     const { resetAppearanceData, activeItems } = useAppearance();
 
     // Tentukan warna ikon berdasarkan tema aktif
-    // Jika tema adalah 'tm-01' (Gelap) atau 'tm-02' (Galaxy), gunakan teks putih.
-    // Jika tema adalah 'tm-03' (Soft Blue) atau null (Default), gunakan teks hitam.
-    const iconColorClass = (activeItems.tema === 'tm-01' || activeItems.tema === 'tm-02') ? 'text-white' : 'text-gray-800 dark:text-gray-100'; // Default ke abu-abu gelap untuk tema terang, putih untuk dark mode
-
-    // Untuk tema Soft Blue, teksnya sudah diatur di index.css, jadi kita bisa mengandalkan itu
+    const iconColorClass = (activeItems.tema === 'tm-01' || activeItems.tema === 'tm-02') ? 'text-white' : 'text-gray-800 dark:text-gray-100';
     const dynamicIconColor = activeItems.tema === 'tm-03' ? 'text-blue-800' : iconColorClass;
-
 
     if (!profile) {
         return <div className="w-16 h-screen theme-bg-secondary shadow-lg dark:bg-gray-900"></div>;
@@ -63,7 +59,6 @@ const Sidebar = () => {
                 className={`hidden md:flex flex-col h-screen theme-bg-secondary shadow-lg z-20 dark:border-r dark:border-gray-700 w-16 fixed top-0 left-0`}
             >
                 <div className="flex items-center justify-center h-20 border-b flex-shrink-0 dark:border-gray-700">
-                    {/* Terapkan warna ikon secara kondisional untuk logo Home */}
                     <Home className={`text-3xl ${dynamicIconColor}`} />
                 </div>
                 <nav className="flex-grow pt-4">
@@ -71,7 +66,6 @@ const Sidebar = () => {
                         {navItems.map((item) => (
                             <li key={item.label}>
                                 <a href={item.href} className="group relative flex items-center justify-center h-12 px-2 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-300 rounded-lg mx-1">
-                                    {/* Terapkan warna ikon secara kondisional untuk item navigasi */}
                                     <item.icon className={`w-6 h-6 flex-shrink-0 ${dynamicIconColor}`} />
                                     <span className="absolute left-full ml-3 px-3 py-1 bg-gray-700 text-white text-sm rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
                                         {item.label}
@@ -110,18 +104,17 @@ const Sidebar = () => {
             </aside>
 
             {/* Navbar bawah untuk layar kecil (di bawah md) */}
-            <nav className="md:hidden fixed bottom-0 left-0 w-full theme-bg-secondary text-white p-2 shadow-lg rounded-t-lg z-50">
+            {/* PENTING: Menambahkan kelas 'hidden' secara kondisional berdasarkan showMobileNavbar */}
+            <nav className={`md:hidden fixed bottom-0 left-0 w-full theme-bg-secondary text-white p-2 shadow-lg rounded-t-lg z-50 ${showMobileNavbar ? '' : 'hidden'}`}>
                 <ul className="flex justify-around items-center">
                     {navItems.map((item) => (
                         <li key={item.label}>
                             <a href={item.href} className="flex flex-col items-center p-2 text-xs hover:bg-gray-700 rounded-lg transition-colors duration-200">
-                                {/* Terapkan warna ikon secara kondisional untuk navbar mobile */}
                                 <item.icon className={`h-5 w-5 mb-1 ${dynamicIconColor}`} />
                                 <span className="theme-text-primary">{item.label}</span>
                             </a>
                         </li>
                     ))}
-                    {/* Menambahkan ikon profil pengguna ke navbar mobile */}
                     <li>
                         <UserProfilePreview
                             user={{
@@ -132,22 +125,20 @@ const Sidebar = () => {
                                 avatarId: activeItems.avatar,
                                 warnaName: activeItems['warna nama']
                             }}
-                            // Hanya tampilkan level dan koin di pop-up, bukan di ikon navbar
-                            showLevel={false} 
-                            showCoins={false}
-                            showEmail={true} // Tampilkan email di pop-up
+                            showLevel={true}
+                            showCoins={true}
+                            showEmail={true}
                             showActions={false}
-                            showUserActions={true} // Pastikan tombol Logout/Reset muncul di modal
+                            showUserActions={true}
                             onLogout={logout}
                             onResetData={handleResetClick}
-                            className="flex flex-col items-center p-2 text-xs" // Styling untuk ikon profil di navbar
+                            className="flex flex-col items-center p-2 text-xs"
                         >
                             <Avatar
                                 username={profile.username}
                                 avatarId={activeItems.avatar}
-                                size="sm" // Ukuran lebih kecil untuk navbar mobile
+                                size="sm"
                             />
-                            {/* Teks "Profil" di bawah ikon */}
                             <span className="theme-text-primary mt-1">Profil</span>
                         </UserProfilePreview>
                     </li>

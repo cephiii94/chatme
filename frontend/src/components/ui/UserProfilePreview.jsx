@@ -32,12 +32,12 @@ const UserProfilePreview = ({
     const styleInfo = WARNA_NAMA_MAP[displayColorId] || WARNA_NAMA_MAP[null];
 
     if (styleInfo && styleInfo.type === 'class') {
-      // Mengurangi ukuran font username lebih lanjut
-      return <h2 className={`text-lg sm:text-xl font-bold ${styleInfo.value}`}>{user.name || user.username}</h2>;
+      // Mengurangi ukuran font username lebih lanjut untuk layar sangat kecil
+      return <h2 className={`text-base sm:text-xl font-bold ${styleInfo.value}`}>{user.name || user.username}</h2>;
     }
     
-    // Mengurangi ukuran font username lebih lanjut
-    return <h2 className="text-lg sm:text-xl font-bold dark:text-gray-100" style={{ color: styleInfo ? styleInfo.value : undefined }}>{user.name || user.username}</h2>;
+    // Mengurangi ukuran font username lebih lanjut untuk layar sangat kecil
+    return <h2 className="text-base sm:text-xl font-bold dark:text-gray-100" style={{ color: styleInfo ? styleInfo.value : undefined }}>{user.name || user.username}</h2>;
   };
   
   const handleClick = () => setIsModalOpen(true);
@@ -74,21 +74,22 @@ const UserProfilePreview = ({
         title="Profil Pengguna"
       >
         <div className="text-center w-full">
-          {/* Mengurangi ukuran avatar menjadi "lg" untuk memberikan lebih banyak ruang vertikal */}
-          <div className="flex justify-center items-center mb-2">
+          <div className="flex justify-center items-center mb-1">
             <Avatar
               username={user.name || user.username}
               avatarId={displayAvatarId}
-              size="lg" // Tetap "lg"
+              size="lg"
               showRing={true}
             />
           </div>
 
           {renderUsername()}
 
-          {/* PENTING: Mengurangi ukuran font level menjadi text-xs dan menambahkan mt-1 */}
-          {showLevel && <p className="text-xs font-bold text-blue-500 dark:text-blue-400 mt-1 mb-0.5">Level {user.level || 1}</p>}
-          {showEmail && user.email && <p className="text-xs text-gray-600 dark:text-gray-400 mb-0.5">{user.email}</p>}
+          {/* Pastikan showLevel true dan user.level ada */}
+          {showLevel && user.level !== undefined && (
+            <p className="text-xs font-bold text-blue-500 dark:text-blue-400 mt-0.5 mb-0.5">Level {user.level}</p>
+          )}
+          {showEmail && user.email && <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 mb-0.5">{user.email}</p>}
           
           {user.isOnline !== undefined && (
             <div className="flex items-center justify-center mt-1 mb-1">
@@ -98,15 +99,14 @@ const UserProfilePreview = ({
           )}
 
           {showCoins && user.coins !== undefined && (
-            <div className="mt-1 bg-yellow-100 text-yellow-800 text-sm font-semibold py-1 px-2 rounded-full inline-block"> {/* Mengurangi text-lg menjadi text-sm, px-3 menjadi px-2 */}
+            <div className="mt-1 bg-yellow-100 text-yellow-800 text-sm font-semibold py-1 px-2 rounded-full inline-block">
                 {user.coins} Koin 💰
             </div>
           )}
         </div>
 
-        {/* Bagian tombol aksi */}
         {showUserActions && (
-          <div className="mt-4 pt-3 border-t dark:border-gray-600">
+          <div className="mt-3 pt-2 border-t dark:border-gray-600">
             <p className="text-xs text-center text-gray-500 dark:text-gray-400 mb-2">Untuk keperluan trial & development</p>
             <div className="flex justify-center gap-x-2">
               {onResetData && (
@@ -132,7 +132,7 @@ const UserProfilePreview = ({
         )}
 
         {showActions && onStartChat && (
-          <div className="mt-4 flex justify-center">
+          <div className="mt-3 flex justify-center">
             <Button 
               variant="primary" 
               onClick={handleStartChat} 

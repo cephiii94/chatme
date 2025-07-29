@@ -17,40 +17,50 @@ const friendsData = [
   { id: 9, name: 'Crombo', avatar: '🤖', lastMessage: 'Ini hadiah dari PuterAI untukmu.', unread: 0, isOnline: true },
 ];
 
-export default function ChatPage() {
-  const { consumeItem, addItemToInventory } = useUser(); // Ambil addItemToInventory
+// Menerima prop setIsChatWindowActiveMobile dari App.jsx
+export default function ChatPage({ setIsChatWindowActiveMobile }) {
+  const { consumeItem, addItemToInventory } = useUser();
   const { messages, sendMessage, claimGiftInMessage } = useChat();
   
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [notification, setNotification] = useState(null);
-  // State baru untuk mengontrol tampilan di layar kecil
   const [showChatWindow, setShowChatWindow] = useState(false); 
 
-  // Efek untuk mendeteksi ukuran layar dan mengatur tampilan awal
+  // Efek untuk mendeteksi ukuran layar dan mengatur tampilan ChatWindow serta memberi tahu App.jsx
   useEffect(() => {
-    const handleResize = () => {
-      // Jika layar lebih besar dari 'md' breakpoint (768px), selalu tampilkan keduanya
+    const handleVisibilityLogic = () => {
       if (window.innerWidth >= 768) {
         setShowChatWindow(true); // Di desktop, chat window selalu terlihat
+        setIsChatWindowActiveMobile(false); // Pastikan App tahu ini bukan mode mobile chat window
       } else {
-        // Di mobile, sembunyikan chat window jika tidak ada teman yang dipilih
+        // Di mobile, tampilkan ChatWindow hanya jika teman dipilih
         setShowChatWindow(!!selectedFriend);
+        // Memberi tahu App.jsx apakah ChatWindow aktif di mobile
+        setIsChatWindowActiveMobile(!!selectedFriend); 
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Panggil saat komponen dimuat
+    window.addEventListener('resize', handleVisibilityLogic);
+    handleVisibilityLogic(); // Panggil sekali saat mount dan saat selectedFriend berubah
 
-    return () => window.removeEventListener('resize', handleResize);
-  }, [selectedFriend]); // Bergantung pada selectedFriend untuk memperbarui tampilan
+    return () => window.removeEventListener('resize', handleVisibilityLogic);
+  }, [selectedFriend, setIsChatWindowActiveMobile]); // Bergantung pada selectedFriend dan setIsChatWindowActiveMobile
 
   const handleSelectFriend = (friend) => {
     setSelectedFriend(friend);
-    // Di layar kecil, saat teman dipilih, tampilkan ChatWindow
+    // Saat teman dipilih, langsung aktifkan ChatWindow di mobile
     if (window.innerWidth < 768) {
       setShowChatWindow(true);
+      setIsChatWindowActiveMobile(true); // Memberi tahu App.jsx untuk menyembunyikan navbar
     }
+  };
+
+  // Fungsi untuk kembali ke ChatList (hanya relevan di mobile)
+  const handleBackToChatList = () => {
+    setSelectedFriend(null); // Hapus teman yang dipilih
+    setShowChatWindow(false); // Sembunyikan ChatWindow
+    setIsChatWindowActiveMobile(false); // Beri tahu App.jsx untuk menampilkan navbar lagi
   };
 
   const handleSendMessage = (newMessageText) => {
@@ -59,14 +69,13 @@ export default function ChatPage() {
       sendMessage(selectedFriend.id, newMessage);
   };
 
-  // Sertakan seluruh objek 'item' saat mengirim
   const handleSendItem = (item) => {
     if (!selectedFriend) return;
     const newItemMessage = {
         id: Date.now(),
         sender: 'me',
-        type: item.subCategory, // Menggunakan subCategory sebagai tipe pesan
-        item: item // Sertakan seluruh objek item di sini
+        type: item.subCategory,
+        item: item
     };
     sendMessage(selectedFriend.id, newItemMessage);
     
@@ -77,7 +86,6 @@ export default function ChatPage() {
     setIsInventoryOpen(false);
   };
 
-  // Panggil addItemToInventory saat menerima hadiah
   const handleAcceptGift = (messageId) => {
     if (!selectedFriend) return;
     
@@ -85,13 +93,8 @@ export default function ChatPage() {
     const messageToClaim = currentMessages.find(msg => msg.id === messageId);
 
     if (messageToClaim && messageToClaim.item) {
-        // Tambahkan item ke inventaris pengguna
         addItemToInventory(messageToClaim.item);
-        
-        // Tandai pesan sebagai sudah diklaim
         claimGiftInMessage(selectedFriend.id, messageId);
-        
-        // Beri notifikasi
         setNotification({ message: `Anda menerima ${messageToClaim.item.name}!`, type: 'success' });
     }
   };
@@ -123,6 +126,7 @@ export default function ChatPage() {
                     onOpenInventory={() => setIsInventoryOpen(true)}
                     onAcceptGift={handleAcceptGift}
                     onPlaySound={handlePlaySound}
+                    onBackToChatList={handleBackToChatList}
                 />
             </div>
         </div>
