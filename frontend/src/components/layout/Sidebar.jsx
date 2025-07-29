@@ -10,7 +10,7 @@ import Avatar from '../ui/Avatar.jsx';
 import UserProfilePreview from '../ui/UserProfilePreview.jsx';
 
 // Menggunakan lucide-react untuk ikon
-import { MessageSquare, Users, ShoppingBag, Award, Package, Home, LogOut, RotateCcw } from 'lucide-react';
+import { MessageSquare, Users, ShoppingBag, Award, Package, Home } from 'lucide-react';
 
 const navItems = [
   { href: "/chat", label: "Chat", icon: MessageSquare },
@@ -26,8 +26,17 @@ const Sidebar = () => {
     const { resetChatData } = useChat();
     const { resetAppearanceData, activeItems } = useAppearance();
 
+    // Tentukan warna ikon berdasarkan tema aktif
+    // Jika tema adalah 'tm-01' (Gelap) atau 'tm-02' (Galaxy), gunakan teks putih.
+    // Jika tema adalah 'tm-03' (Soft Blue) atau null (Default), gunakan teks hitam.
+    const iconColorClass = (activeItems.tema === 'tm-01' || activeItems.tema === 'tm-02') ? 'text-white' : 'text-gray-800 dark:text-gray-100'; // Default ke abu-abu gelap untuk tema terang, putih untuk dark mode
+
+    // Untuk tema Soft Blue, teksnya sudah diatur di index.css, jadi kita bisa mengandalkan itu
+    const dynamicIconColor = activeItems.tema === 'tm-03' ? 'text-blue-800' : iconColorClass;
+
+
     if (!profile) {
-        return <div className="w-16 h-screen bg-white shadow-lg dark:bg-gray-900"></div>;
+        return <div className="w-16 h-screen theme-bg-secondary shadow-lg dark:bg-gray-900"></div>;
     }
 
     const handleResetClick = () => {
@@ -50,19 +59,20 @@ const Sidebar = () => {
     return (
         <>
             {/* Sidebar tetap (fixed) dengan lebar w-16 di layar besar */}
-            {/* PENTING: Menambahkan kelas 'fixed top-0 left-0' di sini */}
             <aside
-                className={`hidden md:flex flex-col h-screen bg-white shadow-lg z-20 dark:bg-gray-800 dark:border-r dark:border-gray-700 w-16 fixed top-0 left-0`}
+                className={`hidden md:flex flex-col h-screen theme-bg-secondary shadow-lg z-20 dark:border-r dark:border-gray-700 w-16 fixed top-0 left-0`}
             >
                 <div className="flex items-center justify-center h-20 border-b flex-shrink-0 dark:border-gray-700">
-                    <Home className={`text-3xl text-blue-600 dark:text-blue-400`} />
+                    {/* Terapkan warna ikon secara kondisional untuk logo Home */}
+                    <Home className={`text-3xl ${dynamicIconColor}`} />
                 </div>
                 <nav className="flex-grow pt-4">
                     <ul>
                         {navItems.map((item) => (
                             <li key={item.label}>
-                                <a href={item.href} className="group relative flex items-center justify-center h-12 px-2 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-300 rounded-lg mx-1">
-                                    <item.icon className="w-6 h-6 flex-shrink-0" />
+                                <a href={item.href} className="group relative flex items-center justify-center h-12 px-2 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-300 rounded-lg mx-1">
+                                    {/* Terapkan warna ikon secara kondisional untuk item navigasi */}
+                                    <item.icon className={`w-6 h-6 flex-shrink-0 ${dynamicIconColor}`} />
                                     <span className="absolute left-full ml-3 px-3 py-1 bg-gray-700 text-white text-sm rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
                                         {item.label}
                                     </span>
@@ -100,16 +110,47 @@ const Sidebar = () => {
             </aside>
 
             {/* Navbar bawah untuk layar kecil (di bawah md) */}
-            <nav className="md:hidden fixed bottom-0 left-0 w-full bg-gray-800 text-white p-2 shadow-lg rounded-t-lg z-50">
+            <nav className="md:hidden fixed bottom-0 left-0 w-full theme-bg-secondary text-white p-2 shadow-lg rounded-t-lg z-50">
                 <ul className="flex justify-around items-center">
                     {navItems.map((item) => (
                         <li key={item.label}>
                             <a href={item.href} className="flex flex-col items-center p-2 text-xs hover:bg-gray-700 rounded-lg transition-colors duration-200">
-                                <item.icon className="h-5 w-5 mb-1" />
-                                <span>{item.label}</span>
+                                {/* Terapkan warna ikon secara kondisional untuk navbar mobile */}
+                                <item.icon className={`h-5 w-5 mb-1 ${dynamicIconColor}`} />
+                                <span className="theme-text-primary">{item.label}</span>
                             </a>
                         </li>
                     ))}
+                    {/* Menambahkan ikon profil pengguna ke navbar mobile */}
+                    <li>
+                        <UserProfilePreview
+                            user={{
+                                username: profile.username,
+                                email: profile.email,
+                                level: profile.level,
+                                coins: profile.coins,
+                                avatarId: activeItems.avatar,
+                                warnaName: activeItems['warna nama']
+                            }}
+                            // Hanya tampilkan level dan koin di pop-up, bukan di ikon navbar
+                            showLevel={false} 
+                            showCoins={false}
+                            showEmail={true} // Tampilkan email di pop-up
+                            showActions={false}
+                            showUserActions={true} // Pastikan tombol Logout/Reset muncul di modal
+                            onLogout={logout}
+                            onResetData={handleResetClick}
+                            className="flex flex-col items-center p-2 text-xs" // Styling untuk ikon profil di navbar
+                        >
+                            <Avatar
+                                username={profile.username}
+                                avatarId={activeItems.avatar}
+                                size="sm" // Ukuran lebih kecil untuk navbar mobile
+                            />
+                            {/* Teks "Profil" di bawah ikon */}
+                            <span className="theme-text-primary mt-1">Profil</span>
+                        </UserProfilePreview>
+                    </li>
                 </ul>
             </nav>
         </>

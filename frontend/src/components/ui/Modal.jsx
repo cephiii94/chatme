@@ -12,11 +12,9 @@ const Modal = ({ isOpen, onClose, title, children, hideHeader = false }) => {
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all duration-300 ease-out animate-scaleIn"
+        className="relative w-full max-w-sm md:max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all duration-300 ease-out animate-scaleIn"
         onClick={e => e.stopPropagation()}
       >
-        {/* --- PERUBAHAN DI SINI --- */}
-        {/* Header sekarang hanya akan muncul jika hideHeader bernilai false */}
         {!hideHeader && (
           <div className="flex items-start justify-between p-4 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -33,8 +31,10 @@ const Modal = ({ isOpen, onClose, title, children, hideHeader = false }) => {
           </div>
         )}
         
-        {/* Body Modal */}
-        <div className={!hideHeader ? "p-6" : "p-6"}>
+        {/* PENTING: Menambahkan max-h dan overflow-y-auto ke body modal */}
+        {/* max-h-[80vh] akan membatasi tinggi modal hingga 80% dari tinggi viewport */}
+        {/* overflow-y-auto akan membuat konten bisa di-scroll jika melebihi tinggi tersebut */}
+        <div className="p-4 sm:p-6 max-h-[80vh] overflow-y-auto">
           {children}
         </div>
       </div>
