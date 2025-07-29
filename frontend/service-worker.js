@@ -7,6 +7,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Hanya cache request dari http(s), abaikan chrome-extension dan lainnya
+  if (!event.request.url.startsWith('http')) return;
+
   event.respondWith(
     caches.open('chatsyok-v1').then(cache => 
       cache.match(event.request).then(response => 
